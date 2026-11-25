@@ -838,6 +838,8 @@ body[data-sky="day"] .herolamp{opacity:.25;animation:none}
 .herofog.f2{top:58%;opacity:.35;animation:fogdrift 110s linear infinite reverse}
 @keyframes fogdrift{from{transform:translate3d(-18%,0,0)}to{transform:translate3d(18%,0,0)}}
 @media (prefers-reduced-motion:reduce){.heroimg,.herolamp,.herofog{animation:none}}
+
+.board-wrap::before{display:none}
 </style>
 </head>
 <body>
@@ -1533,7 +1535,7 @@ function newsItems(){
 }
 function newsHTML(){
   const ev=newsItems();
-  return `<div class="news"><div class="news-h"><span class="news-tag">ふたりの瓦版</span></div>${ev.length?`<ul>${ev.map(e=>`<li class="k-${e.k}"><span class="when">${relTime(e.at)}</span>${esc(e.t)}</li>`).join("")}</ul>`:`<div class="small muted">まだニュースはありません。写真や日記で、島がにぎやかになっていくよ。</div>`}</div>`;
+  return `<div class="news"><div class="news-h"><span class="news-tag">ふたりの瓦版</span></div>${ev.length?`<ul>${ev.map(e=>`<li class="k-${e.k}"><span class="when">${relTime(e.at)}</span>${esc(e.t)}</li>`).join("")}</ul>`:`<div class="small muted">まだニュースはありません。写真や日記で、ここがにぎやかになっていくよ。</div>`}</div>`;
 }
 
 /* ---------- 地図（Leaflet ＋ 国土地理院の淡色地図を、墨と朱の古地図風に） ---------- */
