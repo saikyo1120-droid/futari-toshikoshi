@@ -816,6 +816,28 @@ body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opa
 @media (hover:hover){.tab:hover{transform:translateY(-8px) scale(1.16)}}
 .foot{color:rgba(255,255,255,.8)}.foot .linkbtn{color:rgba(255,255,255,.85)}
 body{padding-block:0 120px}
+
+/* ============ 3Dで描いた神社の景色 ============ */
+.heroimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 100%;display:block;max-width:none;transition:opacity .5s;pointer-events:none}
+.heroshade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(8,8,24,.55) 0,rgba(8,8,24,.18) 26%,transparent 44%)}
+body[data-sky="day"] .heroshade{background:linear-gradient(180deg,rgba(20,30,70,.45) 0,rgba(20,30,70,.12) 26%,transparent 44%)}
+.island{height:clamp(600px,152vw,760px)}
+@media (min-width:900px){.island{height:min(86vh,820px)}}
+.miis{bottom:5%}
+.bubble.count{box-shadow:0 6px 18px rgba(0,0,0,.35)}
+
+/* ============ 動く背景（Macの動く壁紙のように、ゆっくり） ============ */
+.heroimg{transform-origin:50% 62%;animation:herodrift 46s ease-in-out infinite alternate;will-change:transform;translate:var(--px,0) var(--py,0);transition:opacity .5s,translate .6s ease-out}
+@keyframes herodrift{0%{transform:scale(1.06) translate3d(-1.2%,0,0)}50%{transform:scale(1.12) translate3d(.6%,-1.2%,0)}100%{transform:scale(1.08) translate3d(1.4%,.4%,0)}}
+.herolamp{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:radial-gradient(34% 22% at 50% 58%,rgba(255,170,80,.55),transparent 70%),radial-gradient(16% 14% at 22% 62%,rgba(255,180,90,.35),transparent 70%),radial-gradient(16% 14% at 78% 62%,rgba(255,180,90,.35),transparent 70%);animation:lampflicker 5.5s ease-in-out infinite}
+@keyframes lampflicker{0%,100%{opacity:.75}18%{opacity:.5}36%{opacity:.9}55%{opacity:.6}72%{opacity:1}86%{opacity:.7}}
+body[data-sky="day"] .herolamp{opacity:.25;animation:none}
+.herofog{position:absolute;left:-60%;width:220%;height:34%;pointer-events:none;opacity:.5;filter:blur(18px);
+  background:radial-gradient(22% 60% at 20% 50%,rgba(255,255,255,.55),transparent 70%),radial-gradient(26% 50% at 48% 60%,rgba(255,255,255,.45),transparent 70%),radial-gradient(20% 55% at 76% 45%,rgba(255,255,255,.5),transparent 70%)}
+.herofog.f1{top:44%;animation:fogdrift 70s linear infinite}
+.herofog.f2{top:58%;opacity:.35;animation:fogdrift 110s linear infinite reverse}
+@keyframes fogdrift{from{transform:translate3d(-18%,0,0)}to{transform:translate3d(18%,0,0)}}
+@media (prefers-reduced-motion:reduce){.heroimg,.herolamp,.herofog{animation:none}}
 </style>
 </head>
 <body>
@@ -823,75 +845,7 @@ body{padding-block:0 120px}
 
 <div class="wrap">
   <header class="island" aria-label="ふたりの年越し">
-<svg class="scene" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-  <defs>
-    <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sk1"/><stop offset=".55" class="sk2"/><stop offset="1" class="sk3"/></linearGradient>
-    <radialGradient id="sunG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffe9a8" stop-opacity="1"/><stop offset=".45" stop-color="#ff9a4a" stop-opacity=".55"/><stop offset="1" stop-color="#ff6a3d" stop-opacity="0"/></radialGradient>
-    <radialGradient id="lampG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff2c2"/><stop offset=".6" stop-color="#ffb24a"/><stop offset="1" stop-color="#e2641e"/></radialGradient>
-    <radialGradient id="glowG" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ffb24a" stop-opacity=".55"/><stop offset="1" stop-color="#ffb24a" stop-opacity="0"/></radialGradient>
-    <linearGradient id="snowG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sn1"/><stop offset="1" class="sn2"/></linearGradient>
-    <filter id="washi" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/><feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .07 0"/></filter>
-    <g id="lamp"><rect x="-13" y="-4" width="26" height="6" rx="2" fill="#2b1d16"/><ellipse cx="0" cy="22" rx="17" ry="22" fill="url(#lampG)"/><path d="M-15 10h30M-16.5 18h33M-16.5 26h33M-15 34h30" stroke="#b5461c" stroke-width="1.2" opacity=".55"/><rect x="-11" y="42" width="22" height="5" rx="2" fill="#2b1d16"/><path d="M-6 47v8M0 47v9M6 47v8" stroke="#2b1d16" stroke-width="1.6"/></g>
-    <g id="lampglow"><circle r="46" fill="url(#glowG)"/></g>
-    <g id="toro"><path d="M-10 0h20l3 10h-26z" fill="#4b4b55"/><rect x="-7" y="10" width="14" height="22" fill="#5a5a66"/><path d="M-22 32h44l-4-8h-36z" fill="#6a6a78"/><rect x="-14" y="32" width="28" height="22" fill="#55555f"/><rect x="-8" y="37" width="16" height="12" rx="2" fill="#ffc46a"/><path d="M-19 54h38v6h-38z" fill="#4b4b55"/><rect x="-8" y="60" width="16" height="30" fill="#5a5a66"/><path d="M-20 90h40v8h-40z" fill="#4b4b55"/></g>
-    <g id="pine"><path d="M0 -150 L-28 -92 L-14 -96 L-46 -40 L-24 -46 L-62 20 L62 20 L24 -46 L46 -40 L14 -96 L28 -92 Z" class="tree"/><path d="M0 -150 L-28 -92 L-14 -96 L-22 -82 L22 -82 L14 -96 L28 -92 Z" class="treesnow"/><path d="M-46 -40 L-24 -46 L-34 -30 L34 -30 L24 -46 L46 -40 L40 -36 L-40 -36 Z" class="treesnow" opacity=".9"/></g>
-    <g id="flake"><circle r="3" fill="#fff"/></g>
-  </defs>
-  <rect class="sky" width="1000" height="700" fill="url(#skyG)"/>
-  <g class="stars">
-    <circle cx="80" cy="90" r="1.8"/><circle cx="160" cy="40" r="1.2"/><circle cx="240" cy="120" r="1.5"/><circle cx="330" cy="60" r="1.1"/><circle cx="420" cy="30" r="1.6"/><circle cx="520" cy="95" r="1.2"/><circle cx="610" cy="45" r="1.8"/><circle cx="700" cy="110" r="1.1"/><circle cx="790" cy="35" r="1.5"/><circle cx="880" cy="80" r="1.2"/><circle cx="950" cy="140" r="1.6"/><circle cx="120" cy="170" r="1"/><circle cx="380" cy="150" r="1.2"/><circle cx="660" cy="170" r="1"/><circle cx="840" cy="160" r="1.3"/><circle cx="290" cy="200" r="1"/><circle cx="560" cy="200" r="1.1"/><circle cx="740" cy="210" r="1"/><circle cx="40" cy="230" r="1.2"/><circle cx="960" cy="220" r="1"/>
-  </g>
-  <g class="moon"><circle cx="820" cy="120" r="34" fill="#fff5cf"/><circle cx="838" cy="108" r="30" class="moonbite"/></g>
-  <g class="sun"><circle cx="500" cy="330" r="140" fill="url(#sunG)"/><circle cx="500" cy="330" r="38" fill="#ffd56a"/></g>
-  <!-- 遠山 -->
-  <path class="mtn far" d="M0 360 L60 330 L120 345 L190 300 L260 335 L330 310 L400 340 L470 300 L540 330 L600 305 L670 338 L740 300 L810 335 L880 315 L950 345 L1000 320 L1000 420 L0 420 Z"/>
-  <path class="mtnsnow" d="M190 300 L205 312 L178 314 Z M470 300 L486 313 L456 314 Z M740 300 L756 312 L726 313 Z"/>
-  <path class="mtn near" d="M0 400 L80 372 L160 392 L250 360 L340 392 L430 368 L520 396 L600 372 L690 398 L780 366 L870 392 L1000 372 L1000 470 L0 470 Z"/>
-  <!-- 霧 -->
-  <rect class="haze" x="0" y="380" width="1000" height="120"/>
-  <!-- 杉・松 -->
-  <g class="trees">
-    <use href="#pine" transform="translate(40 470) scale(1.2)"/><use href="#pine" transform="translate(120 480) scale(.9)"/><use href="#pine" transform="translate(900 470) scale(1.25)"/><use href="#pine" transform="translate(960 485) scale(.85)"/><use href="#pine" transform="translate(830 486) scale(.75)"/>
-  </g>
-  <!-- 舞殿：提灯の列 -->
-  <g class="maiden">
-    <rect x="300" y="300" width="400" height="14" fill="#1d1511"/>
-    <path d="M280 300 Q500 250 720 300 L720 312 Q500 262 280 312 Z" fill="#1d1511"/>
-    <path d="M270 294 Q500 236 730 294 L730 300 Q500 244 270 300 Z" class="roofsnow"/>
-    <g class="glows">
-      <use href="#lampglow" x="340" y="340"/><use href="#lampglow" x="420" y="332"/><use href="#lampglow" x="500" y="328"/><use href="#lampglow" x="580" y="332"/><use href="#lampglow" x="660" y="340"/>
-      <use href="#lampglow" x="380" y="400"/><use href="#lampglow" x="460" y="394"/><use href="#lampglow" x="540" y="394"/><use href="#lampglow" x="620" y="400"/>
-    </g>
-    <g class="lamps">
-      <use href="#lamp" x="340" y="318"/><use href="#lamp" x="420" y="312"/><use href="#lamp" x="500" y="308"/><use href="#lamp" x="580" y="312"/><use href="#lamp" x="660" y="318"/>
-      <use href="#lamp" x="380" y="380"/><use href="#lamp" x="460" y="374"/><use href="#lamp" x="540" y="374"/><use href="#lamp" x="620" y="380"/>
-    </g>
-    <rect x="312" y="314" width="10" height="150" fill="#2a1d16"/><rect x="678" y="314" width="10" height="150" fill="#2a1d16"/>
-  </g>
-  <!-- 鳥居（しめ縄つき） -->
-  <g class="pagoda" transform="translate(690 300)"><path d="M0 -150 v-34 M-4 -150 h8 l2 14 h-12z M-34 -96 Q0 -128 34 -96 L26 -92 H-26Z M-22 -92 h44 v22 h-44z M-42 -52 Q0 -86 42 -52 L33 -48 H-33Z M-26 -48 h52 v24 h-52z M-50 -6 Q0 -42 50 -6 L40 -2 H-40Z M-30 -2 h60 v26 h-60z M-58 42 Q0 4 58 42 L47 46 H-47Z M-34 46 h68 v60 h-68z" fill="var(--tree)" stroke="var(--tree)" stroke-width="3" stroke-linejoin="round"/><path d="M-34 -96 Q0 -126 34 -96 M-42 -52 Q0 -84 42 -52 M-50 -6 Q0 -40 50 -6 M-58 42 Q0 6 58 42" fill="none" stroke="#f4f6fb" stroke-width="4" stroke-linecap="round"/></g>
-  <g class="torii" transform="translate(500 0) scale(.62 1) translate(-500 0)">
-    <path d="M150 470 L150 262 L170 262 L170 470 Z M830 470 L830 262 L850 262 L850 470 Z" class="pillar"/>
-    <path d="M118 232 Q500 196 882 232 L882 254 Q500 218 118 254 Z" class="kasagi"/>
-    <path d="M110 226 Q500 190 890 226 L890 236 Q500 200 110 236 Z" class="kasagisnow"/>
-    <rect x="150" y="286" width="700" height="18" class="nuki"/>
-    <rect x="492" y="254" width="16" height="32" class="gakuzuka"/>
-    <path d="M170 304 Q500 322 830 304" class="rope"/>
-    <path d="M300 311 l6 14 l-10 2 l6 14 l-10 2 l6 12 M500 316 l6 14 l-10 2 l6 14 l-10 2 l6 12 M700 311 l6 14 l-10 2 l6 14 l-10 2 l6 12" class="shide"/>
-    <path d="M400 314 l6 14 l-10 2 l6 14 l-10 2 l6 12 M600 314 l6 14 l-10 2 l6 14 l-10 2 l6 12" class="shide"/>
-  </g>
-  <!-- 石灯籠 -->
-  <use href="#toro" transform="translate(230 400) scale(1.05)"/><use href="#toro" transform="translate(770 400) scale(1.05)"/>
-  <g class="toroglow"><circle cx="230" cy="444" r="40" fill="url(#glowG)"/><circle cx="770" cy="444" r="40" fill="url(#glowG)"/></g>
-  <!-- 雪の地面と石畳 -->
-  <rect x="0" y="470" width="1000" height="230" fill="url(#snowG)"/>
-  <path class="snowbank" d="M0 470 Q160 452 320 470 Q500 484 680 470 Q840 452 1000 470 L1000 500 L0 500 Z"/>
-  <g class="stones">
-    <path d="M420 500 L580 500 L720 700 L280 700 Z"/>
-    <path d="M440 520 h120 M430 560 h140 M418 600 h164 M404 640 h192 M390 680 h220" class="joint"/>
-  </g>
-  <rect width="1000" height="700" filter="url(#washi)" opacity=".5" style="mix-blend-mode:multiply" class="paper"/>
-</svg>
+<img class="heroimg" id="heroimg" src="hero-night.webp" alt="" width="2400" height="1350" fetchpriority="high" decoding="async"><div class="herolamp" aria-hidden="true"></div><div class="herofog f1" aria-hidden="true"></div><div class="herofog f2" aria-hidden="true"></div><div class="heroshade" aria-hidden="true"></div>
     <div class="snowfall" id="snowfall" aria-hidden="true"></div>
 <h1 class="sr-only">ふたりの年越しぐらし 2026-2027 大阪・京都 5泊6日</h1><div class="logo" id="logo-hero" role="img" aria-label="ふたりの年越しぐらし 2026-2027 大阪・京都">
       <svg class="lg-svg" viewBox="0 0 740 430" aria-hidden="true">
@@ -1191,7 +1145,7 @@ async function withRetry(fn,where){
 }
 
 /* ---------- 空の時間帯・カウントダウン・おしゃべり ---------- */
-function skyMode(){const h=jstHour();document.body.dataset.sky=h>=18||h<6?"night":h>=16?"dusk":h<8?"dawn":"day"}
+function skyMode(){const h=jstHour();document.body.dataset.sky=h>=18||h<6?"night":h>=16?"dusk":h<8?"dawn":"day";const hi=document.getElementById("heroimg"),hs="hero-"+document.body.dataset.sky+".webp";if(hi&&!hi.src.endsWith(hs)){const im=new Image();im.onload=()=>{hi.style.opacity=.2;setTimeout(()=>{hi.src=hs;hi.style.opacity=1},350)};im.src=hs}}
 function renderCount(){
   const d=tripDay(),el=$("#count");if(!el)return;
   if(d<1){const left=Math.ceil((START-Date.now())/864e5);el.innerHTML=`レイラ集合まで あと <b>${left}</b> 日！`}
@@ -1217,6 +1171,10 @@ function nyTick(){
   }else if(ms<=-90e3&&ov&&!ov.classList.contains("done"))ov.remove();
 }
 setInterval(nyTick,1000);
+function initParallax(){const hi=$("#heroimg");if(!hi||matchMedia("(prefers-reduced-motion: reduce)").matches)return;const set=(x,y)=>{hi.style.setProperty("--px",(x*-14).toFixed(1)+"px");hi.style.setProperty("--py",(y*-8).toFixed(1)+"px")};
+  addEventListener("pointermove",e=>{if(e.pointerType==="mouse")set(e.clientX/innerWidth-.5,e.clientY/innerHeight-.5)},{passive:true});
+  addEventListener("deviceorientation",e=>{if(e.gamma==null)return;set(Math.max(-1,Math.min(1,e.gamma/30))*.5,Math.max(-1,Math.min(1,(e.beta-45)/30))*.5)},{passive:true});
+  addEventListener("scroll",()=>{if(scrollY<900)hi.style.setProperty("--py",(scrollY*.12).toFixed(1)+"px")},{passive:true})}
 function initSnow(){const el=$("#snowfall");if(!el||matchMedia("(prefers-reduced-motion: reduce)").matches)return;const n=innerWidth<600?26:44;let h="";for(let i=0;i<n;i++){const s=2+Math.random()*5;h+=`<i style="left:${(Math.random()*100).toFixed(1)}%;width:${s.toFixed(1)}px;height:${s.toFixed(1)}px;opacity:${(.35+Math.random()*.6).toFixed(2)};--dx:${(Math.random()*80-40).toFixed(0)}px;animation-duration:${(7+Math.random()*10).toFixed(1)}s;animation-delay:-${(Math.random()*16).toFixed(1)}s"></i>`}el.innerHTML=h}
 /* ---------- Miiのおしゃべり・リアクション ---------- */
 const TALK_BDAY={yui:{sai:[],yui:[]},sai:{sai:[],yui:[]}};
@@ -2896,7 +2854,7 @@ const wvBtn=$("#wave");if(wvBtn){const upd=()=>{wvBtn.setAttribute("aria-pressed
 document.addEventListener("visibilitychange",()=>document.body.classList.toggle("paused",document.hidden));
 
 /* ---------- 起動 ---------- */
-skyMode();renderCount();initSnow();
+skyMode();renderCount();initSnow();initParallax();
 let lastTick={day:tripDay(),letter:Date.now()>=LETTER_OPEN};
 setInterval(()=>{skyMode();renderCount();
   const now={day:tripDay(),letter:Date.now()>=LETTER_OPEN};

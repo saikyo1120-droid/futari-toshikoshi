@@ -1,0 +1,99 @@
+<!doctype html><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style>
+<script type="importmap">{"imports":{"three":"./node_modules/three/build/three.module.js"}}</script>
+<script type="module">
+import * as THREE from "three";
+const MODE=new URLSearchParams(location.search).get("m")||"night";
+const W=2400,H=1350;
+const P={
+ night:{top:"#070b1f",mid:"#141a44",low:"#3a2d5c",fog:"#1b2046",fogD:.016,hemi:["#3b4a8c","#1a1c33",.55],sun:["#9fb4ff",.55,[-18,26,14]],amb:.10,lamp:1.0,stars:1,moon:1,sunDisc:0,expo:1.25,snow:"#c9d4ee"},
+ dawn:{top:"#27306a",mid:"#b8597a",low:"#ffb46b",fog:"#d89a8c",fogD:.012,hemi:["#ffc9a8","#5a4a6a",.85],sun:["#ffb070",1.5,[6,5,-40]],amb:.18,lamp:.75,stars:.15,moon:0,sunDisc:1,expo:1.15,snow:"#f3dcd6"},
+ day:{top:"#5d8fd0",mid:"#a9c8ea",low:"#e6eef7",fog:"#cfdcec",fogD:.010,hemi:["#dfeaff","#8a94a8",1.25],sun:["#fff3dc",1.9,[-20,30,20]],amb:.25,lamp:.25,stars:0,moon:0,sunDisc:0,expo:1.0,snow:"#ffffff"},
+ dusk:{top:"#1e2358",mid:"#7a3f78",low:"#f08a55",fog:"#8a5a80",fogD:.013,hemi:["#c79ad0","#3a3050",.75],sun:["#ff9060",1.1,[-30,7,-30]],amb:.14,lamp:.95,stars:.3,moon:.5,sunDisc:0,expo:1.2,snow:"#e3cfe0"}
+}[MODE];
+const R=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});R.setSize(W,H);R.setPixelRatio(1.5);R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;R.toneMapping=THREE.ACESFilmicToneMapping;R.toneMappingExposure=P.expo;R.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(R.domElement);
+const S=new THREE.Scene();S.fog=new THREE.FogExp2(P.fog,P.fogD);
+// 空
+{const c=document.createElement("canvas");c.width=16;c.height=512;const g=c.getContext("2d");const gr=g.createLinearGradient(0,0,0,512);gr.addColorStop(0,P.top);gr.addColorStop(.45,P.mid);gr.addColorStop(.62,P.low);gr.addColorStop(1,P.low);g.fillStyle=gr;g.fillRect(0,0,16,512);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;S.background=t}
+const cam=new THREE.PerspectiveCamera(40,W/H,.1,700);cam.position.set(0,1.9,24);cam.lookAt(0,5.6,-6);
+let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+const M=(c,o={})=>new THREE.MeshStandardMaterial({color:c,roughness:.8,metalness:0,...o});
+const add=(g,m,x=0,y=0,z=0,sh=true)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,z);o.castShadow=sh;o.receiveShadow=true;S.add(o);return o};
+// 光
+S.add(new THREE.HemisphereLight(P.hemi[0],P.hemi[1],P.hemi[2]));S.add(new THREE.AmbientLight("#ffffff",P.amb));
+const sun=new THREE.DirectionalLight(P.sun[0],P.sun[1]);sun.position.set(...P.sun[2]);sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);Object.assign(sun.shadow.camera,{left:-40,right:40,top:40,bottom:-40,near:1,far:140});sun.shadow.bias=-.0004;sun.shadow.radius=4;S.add(sun);
+// グロー用テクスチャ
+const glowTex=(()=>{const c=document.createElement("canvas");c.width=c.height=128;const g=c.getContext("2d");const gr=g.createRadialGradient(64,64,0,64,64,64);gr.addColorStop(0,"rgba(255,255,255,1)");gr.addColorStop(.25,"rgba(255,220,160,.55)");gr.addColorStop(1,"rgba(255,160,60,0)");g.fillStyle=gr;g.fillRect(0,0,128,128);return new THREE.CanvasTexture(c)})();
+const glow=(x,y,z,s,col="#ffb060",op=.9)=>{const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:col,transparent:true,opacity:op*P.lamp,blending:THREE.AdditiveBlending,depthWrite:false,fog:false}));sp.position.set(x,y,z);sp.scale.set(s,s,1);S.add(sp)};
+// 雪の地面（ゆるい起伏）
+{const g=new THREE.PlaneGeometry(400,400,160,160);g.rotateX(-Math.PI/2);const p=g.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i);const d=Math.max(0,Math.abs(x)-2.2);const h=Math.min(1,d/3)*(.18+.22*Math.sin(x*.7+z*.4)*Math.cos(z*.35)+.12*Math.sin(x*1.9)*Math.sin(z*1.3))+Math.max(0,Math.abs(x)-14)*.05;p.setY(i,h)}g.computeVertexNormals();add(g,M(P.snow,{roughness:.95}),0,0,0,false)}
+// 石畳の参道
+{const stone=[M("#8f8c88",{roughness:.9}),M("#9a968f",{roughness:.9}),M("#84817c",{roughness:.9})];for(let z=30;z>-34;z-=1.25){for(let k=0;k<3;k++){const w=1.18,x=(k-1)*1.2+((Math.round(z/1.25)%2)?.0:.0);const b=add(new THREE.BoxGeometry(w,.12,1.2),stone[Math.floor(rnd()*3)],x,.03+rnd()*.012,z-.6);b.rotation.y=(rnd()-.5)*.01}}
+ for(const sx of [-1,1])for(let z=30;z>-34;z-=.9)add(new THREE.BoxGeometry(.28,.22,.86),M("#a5a19a"),sx*1.95,.06,z);
+ // 石畳のうっすら雪
+ for(let i=0;i<70;i++){const m=add(new THREE.CircleGeometry(.25+rnd()*.5,10),M(P.snow,{transparent:true,opacity:.55,roughness:1}),(rnd()-.5)*3.4,.1,28-rnd()*60,false);m.rotation.x=-Math.PI/2}}
+// 鳥居（明神鳥居）
+function torii(z,s=1){const G=new THREE.Group();const red=M("#c5371f",{roughness:.55}),blk=M("#1c1a1c",{roughness:.6}),snow=M("#f7f9ff",{roughness:1});
+ const mk=(g,m,x,y,zz)=>{const o=new THREE.Mesh(g,m);o.position.set(x,y,zz);o.castShadow=o.receiveShadow=true;G.add(o);return o};
+ for(const sx of [-1,1]){const p=mk(new THREE.CylinderGeometry(.24,.3,5.4,24),red,sx*2.7,2.7,0);p.rotation.z=-sx*.035;mk(new THREE.CylinderGeometry(.36,.4,.7,24),blk,sx*2.79,.35,0);mk(new THREE.CylinderGeometry(.33,.33,.14,24),blk,sx*2.6,5.42,0)}
+ mk(new THREE.BoxGeometry(6.9,.38,.3),red,0,4.15,0);mk(new THREE.BoxGeometry(.5,.9,.16),blk,0,4.9,0);mk(new THREE.BoxGeometry(.4,.78,.18),M("#c9a24a",{metalness:.6,roughness:.35}),0,4.9,.02);
+ // 反りのある島木・笠木
+ const curve=(w,h,d,y,m,lift)=>{const sh=new THREE.Shape();const n=24;for(let i=0;i<=n;i++){const u=i/n*2-1;const x=u*w/2,yy=lift*u*u*u*u*1.0+lift*.35*u*u;i?sh.lineTo(x,yy):sh.moveTo(x,yy)}for(let i=n;i>=0;i--){const u=i/n*2-1;sh.lineTo(u*(w/2+ (h*.25)),lift*u*u*u*u+lift*.35*u*u+h)}const g=new THREE.ExtrudeGeometry(sh,{depth:d,bevelEnabled:false});g.translate(0,0,-d/2);return mk(g,m,0,y,0)};
+ curve(7.3,.34,.42,5.42,red,.32);curve(7.9,.26,.62,5.76,blk,.42);curve(8.0,.1,.66,6.02,snow,.42);
+ // しめ縄と紙垂
+ const rope=new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-2.5,3.85,.2),new THREE.Vector3(-1.2,3.55,.24),new THREE.Vector3(0,3.45,.26),new THREE.Vector3(1.2,3.55,.24),new THREE.Vector3(2.5,3.85,.2)]),40,.07,10);mk(rope,M("#c9b27a",{roughness:1}),0,0,0);
+ for(const x of [-1.6,-.55,.55,1.6]){const sh=new THREE.Shape();sh.moveTo(0,0);sh.lineTo(.16,-.2);sh.lineTo(.02,-.22);sh.lineTo(.2,-.44);sh.lineTo(.04,-.46);sh.lineTo(.2,-.7);sh.lineTo(-.06,-.42);sh.lineTo(.08,-.4);sh.lineTo(-.08,-.2);sh.lineTo(.06,-.18);const o=mk(new THREE.ShapeGeometry(sh),new THREE.MeshStandardMaterial({color:"#ffffff",side:THREE.DoubleSide,roughness:1}),x-.06,3.55-Math.abs(x)*.02+ (Math.abs(x)>1? .06:0),.3)}
+ G.position.z=z;G.scale.setScalar(s);S.add(G)}
+torii(1.5,1.12);torii(-13,.9);
+// 提灯（吊り）
+function chochin(x,y,z,s=1,col="#ff8a3c"){const m=new THREE.MeshStandardMaterial({color:"#ffd9a0",emissive:col,emissiveIntensity:1.6*P.lamp+.15,roughness:.6});const b=add(new THREE.SphereGeometry(.3*s,20,16),m,x,y,z,false);b.scale.y=1.28;add(new THREE.CylinderGeometry(.17*s,.17*s,.07*s,16),M("#1a1414"),x,y+.4*s,z,false);add(new THREE.CylinderGeometry(.17*s,.17*s,.07*s,16),M("#1a1414"),x,y-.4*s,z,false);
+ for(let k=-2;k<=2;k++){const r=add(new THREE.TorusGeometry(.3*s*Math.cos(k*.42),.008*s,6,24),M("#b0541c"),x,y+k*.14*s,z,false);r.rotation.x=Math.PI/2}
+ glow(x,y,z+.05,2.0*s,"#ffa050",.75)}
+// 石灯籠
+function toro(x,z,lit=true){const st=M("#7d7b78",{roughness:.95}),sn=M("#f7f9ff",{roughness:1});
+ add(new THREE.CylinderGeometry(.42,.5,.25,6),st,x,.12,z);add(new THREE.CylinderGeometry(.16,.2,1.25,8),st,x,.87,z);add(new THREE.CylinderGeometry(.42,.2,.22,6),st,x,1.6,z);
+ add(new THREE.BoxGeometry(.5,.5,.5),st,x,1.96,z);add(new THREE.BoxGeometry(.34,.3,.52),new THREE.MeshStandardMaterial({color:"#ffe2a8",emissive:"#ffb040",emissiveIntensity:(lit?2.2:.3)*P.lamp+.1}),x,1.96,z,false);add(new THREE.BoxGeometry(.52,.3,.34),new THREE.MeshStandardMaterial({color:"#ffe2a8",emissive:"#ffb040",emissiveIntensity:(lit?2.2:.3)*P.lamp+.1}),x,1.96,z,false);
+ const roof=add(new THREE.ConeGeometry(.62,.42,6),st,x,2.42,z);add(new THREE.ConeGeometry(.6,.2,6),sn,x,2.56,z);add(new THREE.SphereGeometry(.09,10,8),st,x,2.7,z);
+ if(lit){glow(x,1.96,z+.3,2.6,"#ffa848",.7)}}
+const lampZ=[18,13.5,9,4.5,-2.5,-7,-11.5,-17,-22];lampZ.forEach((z,i)=>{toro(-3.1,z);toro(3.1,z)});
+// 実光源（数を絞る）
+for(const [x,y,z,i] of [[-3.1,2,9,9],[3.1,2,9,9],[-3.1,2,4.5,9],[3.1,2,4.5,9],[0,3.3,1.2,16],[-3.1,2,-2.5,8],[3.1,2,-2.5,8],[0,3,-26,40]]){const l=new THREE.PointLight("#ffa24a",i*P.lamp,16,1.8);l.position.set(x,y,z);S.add(l)}
+// 鳥居の下の提灯の列
+for(let k=0;k<5;k++)chochin(-2.0+k*1.0,3.05-(k===2?.06:Math.abs(k-2)*-.02),1.75,.95);
+// 参道わきの提灯の列（木の架け）
+for(const sx of [-1,1]){for(let z=-4;z>-24;z-=4){add(new THREE.CylinderGeometry(.07,.07,3.6,8),M("#3a2a20"),sx*4.4,1.8,z);}
+ for(let z=-4;z>-22;z-=1.0){chochin(sx*4.4,3.2-.12*Math.sin((z+4)/4*Math.PI)**2,z,.62)}
+ add(new THREE.BoxGeometry(.06,.06,20),M("#3a2a20"),sx*4.4,3.62,-14,false)}
+// 拝殿
+{const wood=M("#5a2f22",{roughness:.7}),red=M("#b33a25",{roughness:.6}),roofM=M("#2a2f38",{roughness:.6}),sn=M("#f7f9ff",{roughness:1}),z=-30;
+ add(new THREE.BoxGeometry(15,.9,9),M("#8b8782"),0,.45,z);add(new THREE.BoxGeometry(12.5,4.2,6.5),wood,0,3,z);
+ for(let k=-3;k<=3;k++)add(new THREE.CylinderGeometry(.22,.22,4.3,12),red,k*2,3.05,z+3.4);
+ add(new THREE.BoxGeometry(11.5,3.2,.1),new THREE.MeshStandardMaterial({color:"#ffd9a0",emissive:"#ff9a3c",emissiveIntensity:1.5*P.lamp+.12}),0,2.9,z+3.2,false);
+ for(let k=-5;k<=5;k++)add(new THREE.BoxGeometry(.08,3.2,.14),M("#2a1810"),k*1.0,2.9,z+3.26,false);for(const y of [1.9,2.9,3.9])add(new THREE.BoxGeometry(11.5,.08,.14),M("#2a1810"),0,y,z+3.26,false);
+ // 反り屋根
+ const sh=new THREE.Shape();const n=28;for(let i=0;i<=n;i++){const u=i/n*2-1;const x=u*9.6,y=4.6*(1-Math.abs(u))**1.5+1.1*u*u*u*u;i?sh.lineTo(x,y):sh.moveTo(x,y)}sh.lineTo(9.6,.6);sh.lineTo(-9.6,.6);
+ const rg=new THREE.ExtrudeGeometry(sh,{depth:10.5,bevelEnabled:false});rg.translate(0,0,-5.25);add(rg,roofM,0,4.7,z);
+ const sh2=new THREE.Shape();for(let i=0;i<=n;i++){const u=i/n*2-1;const x=u*9.7,y=4.6*(1-Math.abs(u))**1.5+1.1*u*u*u*u+.28;i?sh2.lineTo(x,y):sh2.moveTo(x,y)}for(let i=n;i>=0;i--){const u=i/n*2-1;sh2.lineTo(u*9.7,4.6*(1-Math.abs(u))**1.5+1.1*u*u*u*u+.02)}
+ const sg=new THREE.ExtrudeGeometry(sh2,{depth:10.7,bevelEnabled:false});sg.translate(0,0,-5.35);add(sg,sn,0,4.7,z);
+ for(let k=-5;k<=5;k++)chochin(k*1.05,4.55,z+4.9,.7);
+ glow(0,3,z+4,22,"#ff9a40",.5)}
+// 五重塔
+{const x=17,z=-34,wood=M("#4a2a22"),roofM=M("#232830"),sn=M("#f7f9ff",{roughness:1});let y=0;add(new THREE.BoxGeometry(6,.8,6),M("#84807b"),x,.4,z);y=.8;
+ for(let i=0;i<5;i++){const w=4.2-i*.55,h=2.3-i*.12;add(new THREE.BoxGeometry(w,h,w),wood,x,y+h/2,z);add(new THREE.BoxGeometry(w*.5,h*.45,w+.04),new THREE.MeshStandardMaterial({color:"#ffd9a0",emissive:"#ff9a3c",emissiveIntensity:1.1*P.lamp+.08}),x,y+h*.5,z,false);
+  const r=add(new THREE.ConeGeometry((w+2.6)*.72,1.15,4),roofM,x,y+h+.45,z);r.rotation.y=Math.PI/4;const s2=add(new THREE.ConeGeometry((w+2.6)*.7,.62,4),sn,x,y+h+.78,z);s2.rotation.y=Math.PI/4;y+=h+.75}
+ add(new THREE.CylinderGeometry(.07,.1,4.2,8),M("#c9a24a",{metalness:.7,roughness:.3}),x,y+2,z);for(let k=0;k<6;k++)add(new THREE.TorusGeometry(.28-.03*k,.035,6,16),M("#c9a24a",{metalness:.7,roughness:.3}),x,y+.8+k*.42,z,false).rotation.x=Math.PI/2;
+ glow(x,7,z+2,16,"#ff9a40",.28)}
+// 杉木立
+function cedar(x,z,s){const tr=M("#3b2a22"),lf=M(MODE==="day"?"#2f4a3c":"#1d3229",{roughness:.95}),sn=M("#f4f7ff",{roughness:1});add(new THREE.CylinderGeometry(.22*s,.34*s,2.2*s,8),tr,x,1.1*s,z);
+ for(let i=0;i<7;i++){const r=(2.5-i*.3)*s,y=(2+i*1.25)*s;const c=add(new THREE.ConeGeometry(r,2.3*s,10),lf,x,y,z);c.rotation.y=rnd()*3;const w=add(new THREE.ConeGeometry(r*.93,1.0*s,10),sn,x+.05*s,y+.72*s,z);w.rotation.y=rnd()*3}}
+for(let i=0;i<90;i++){const side=rnd()<.5?-1:1;const x=side*(7.5+rnd()*46),z=14-rnd()*78;if(Math.abs(x-17)<6&&z<-26&&z>-42)continue;if(Math.abs(x)<12&&z<-22)continue;cedar(x,z,.85+rnd()*1.1)}
+for(const [x,z,s] of [[-7.2,7,1.5],[7.6,5.5,1.6],[-9.5,-1,1.3],[10,-3,1.35],[-6.6,-9,1.1],[6.9,-12,1.15]])cedar(x,z,s);
+// 植え込み（雪をかぶった低木）
+for(let i=0;i<26;i++){const sx=rnd()<.5?-1:1,x=sx*(4.9+rnd()*2.2),z=12-rnd()*34;const r=.45+rnd()*.5;const b=add(new THREE.SphereGeometry(r,12,10),M("#243a30"),x,r*.6,z);b.scale.y=.75;const s2=add(new THREE.SphereGeometry(r*.96,12,10),M("#f4f7ff",{roughness:1}),x,r*.86,z);s2.scale.y=.5}
+// 遠くの山
+for(const [x,z,r,h] of [[-70,-150,60,46],[10,-180,80,60],[80,-160,64,50],[-140,-170,70,40],[150,-190,80,44],[-20,-220,110,70]]){add(new THREE.ConeGeometry(r,h,7),M(MODE==="day"?"#7d8fb0":"#3a4068",{roughness:1}),x,h/2-2,z,false);add(new THREE.ConeGeometry(r*.42,h*.42,7),M("#e8eefc",{roughness:1}),x,h*.79-2,z,false)}
+// 星・月・朝日
+if(P.stars){const g=new THREE.BufferGeometry();const a=[];for(let i=0;i<900;i++){const th=rnd()*Math.PI*2,ph=rnd()*.45+.05;a.push(Math.cos(th)*300*Math.cos(ph),300*Math.sin(ph)+10,-Math.abs(Math.sin(th))*300*Math.cos(ph))}g.setAttribute("position",new THREE.Float32BufferAttribute(a,3));S.add(new THREE.Points(g,new THREE.PointsMaterial({color:"#ffffff",size:1.3,sizeAttenuation:false,transparent:true,opacity:P.stars,fog:false})))}
+if(P.moon){const m=new THREE.Mesh(new THREE.CircleGeometry(7,48),new THREE.MeshBasicMaterial({color:"#fff6d8",fog:false,transparent:true,opacity:P.moon}));m.position.set(-78,96,-260);m.lookAt(cam.position);S.add(m);const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:"#cfd8ff",transparent:true,opacity:.5*P.moon,blending:THREE.AdditiveBlending,fog:false,depthWrite:false}));sp.position.copy(m.position);sp.scale.set(90,90,1);S.add(sp)}
+if(P.sunDisc){const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:"#ffd08a",transparent:true,opacity:1,blending:THREE.AdditiveBlending,fog:false,depthWrite:false}));sp.position.set(46,26,-300);sp.scale.set(240,240,1);S.add(sp);const d=new THREE.Mesh(new THREE.CircleGeometry(9,48),new THREE.MeshBasicMaterial({color:"#fff0c0",fog:false}));d.position.set(46,26,-299);d.lookAt(cam.position);S.add(d)}
+R.render(S,cam);window.__done=true;
+</script>
