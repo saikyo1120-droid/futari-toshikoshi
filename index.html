@@ -913,6 +913,24 @@ h3{font-weight:900}
 .hanko-row{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:10px;min-height:36px}
 .hanko{width:46px;height:46px;border:2.5px solid var(--shu);color:var(--shu);border-radius:50%;display:grid;place-items:center;font-family:var(--brush);font-size:20px;line-height:1;transform:rotate(-10deg);animation:thump .5s cubic-bezier(.2,1.6,.4,1)}.hanko small{display:none}
 @media (max-width:760px){.diary{grid-template-columns:1fr}}
+
+/* ============ 今年の漢字・書き初め・タイムカプセル ============ */
+.kj-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.kj{text-align:center}.kj-board{aspect-ratio:1;background:#fffdf8;border:8px solid #8a5a34;border-radius:6px;display:grid;place-items:center;box-shadow:var(--soft),inset 0 0 0 2px #c9a24a}
+.kj-board span{font-family:var(--brush);font-size:clamp(64px,22vw,120px);line-height:1;color:#1b1a1f}.kj.hide .kj-board span{color:#d9d2c4}
+.kj-n{font-family:var(--min);font-weight:700;font-size:13px;margin-top:6px}.kj-why{font-size:12.5px;line-height:1.5;min-height:1.5em}
+.kj-form{display:flex;gap:6px;align-items:stretch}.kj-form input{border:1px solid var(--hair);border-radius:12px;background:#f6f3ee;padding:10px 12px;font:inherit;font-size:16px;min-width:0;flex:1}
+.kj-form .kj-ch{flex:0 0 56px;text-align:center;font-family:var(--brush);font-size:26px;padding:4px}
+.box.kz{max-width:520px}.kz-paper{background:#1d2a44;border-radius:14px;padding:12px;display:grid;place-items:center}
+#kz-cv{width:100%;max-height:58vh;aspect-ratio:900/1260;height:auto;background:#fbf8f0;touch-action:none;border-radius:2px;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:crosshair}
+.kz-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0}.kz-seg{display:flex;background:rgba(43,36,32,.07);border-radius:10px;padding:3px}
+.kz-seg button{border:0;background:none;border-radius:8px;padding:6px 14px;font-family:var(--brush);font-size:16px;min-height:36px}.kz-seg button.on{background:#fff;box-shadow:var(--soft)}
+#kz-red.on{background:var(--shu);color:#fff}.kz-foot{display:flex;gap:8px;flex-wrap:wrap}.kz-foot .btn{flex:1}
+.cp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.cp-slot{background:rgba(43,36,32,.05);border-radius:14px;padding:10px;display:grid;justify-items:center;gap:2px;text-align:center;border:1.5px dashed var(--hair)}
+.cp-slot.in{background:linear-gradient(160deg,#2a2d4a,#3b2a5a);color:#f7f1e6;border:0;box-shadow:var(--soft)}.cp-slot img{height:46px;width:auto}.cp-slot small{font-size:11.5px;opacity:.8}
+.cp-text{white-space:pre-wrap;text-align:left;font-size:13.5px;line-height:1.8;margin-top:6px;background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;width:100%}
+.cp-form{display:grid;gap:8px}.cp-form textarea{min-height:120px;font:inherit;font-size:16px;line-height:1.7;resize:vertical;width:100%}
 </style>
 </head>
 <body>
@@ -1531,7 +1549,7 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
 function safeRender(){const a=document.activeElement;if(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main")){S.pendingRender=true;return}render()}
 document.querySelector("main").addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(S.pendingRender&&!(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main"))){S.pendingRender=false;render()}},50)});
 S.drafts={};
-document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;if(el.id==="diary-in"){const c=document.getElementById("diary-cnt");if(c)c.textContent=el.value.length?el.value.length+"文字":""}
+document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;if(el.id==="capsule-in")S.drafts.capsule=el.value;if(el.id==="diary-in"){const c=document.getElementById("diary-cnt");if(c)c.textContent=el.value.length?el.value.length+"文字":""}
   if(el.id==="diary-in")S.drafts["diary:"+S.diaryDay]=el.value;else if(el.id==="letter-in")S.drafts.letter=el.value;else if(el.id==="secret-in")S.drafts.secret=el.value});
 function render(){S.pendingRender=false;const keep={};
   document.querySelectorAll("main textarea[id],main input[id]:not([type=checkbox]):not([type=file])").forEach(el=>{if(el.value!==el.defaultValue)keep[el.id]=el.value});
@@ -2441,21 +2459,78 @@ function renderDiary(){
     </div>
   </div>
   ${emaHTML()}
+  ${kanjiHTML()}
+  ${kakizomeCardHTML()}
+  ${capsuleHTML()}
   <div class="remind"><h3><span class="moon"></span>毎晩23時のおしらせ</h3>
     <p class="small">旅行中の6日間、毎晩23時にスマホへ「交換日記を書こう」と通知が来るように、カレンダーの予定を追加できます。ふたりともそれぞれのスマホで追加してね。</p>
     <a class="btn" id="ics" href="toshikoshi-diary-reminder.ics">カレンダーに追加する</a>
     <p class="small" style="opacity:.85;margin-bottom:0">iPhoneは「すべて追加」、Androidはダウンロードしたファイルを開くと、カレンダーに6日分の予定（毎晩23時）が入ります。</p></div>
   ${letterHTML()}`;
 }
+/* ---------- 今年の漢字（ふたりとも決めたら同時に発表） ---------- */
+function kanjiHTML(){const me=S.who,o=other(me||"sai"),K=S.kanji||{};const both=K.sai&&K.yui;
+  const board=w=>{const x=K[w];const show=both||(w===me&&x);return `<div class="kj ${show?"":"hide"}"><div class="kj-board"><span>${show?esc(x.ch):"？"}</span></div><div class="kj-n">${NAME[w]}の一文字</div>${show&&x.why?`<div class="kj-why">${esc(x.why)}</div>`:`<div class="kj-why muted">${x?(both?"":"決めたよ。相手を待っています"):"まだ決めていません"}</div>`}</div>`};
+  return `<section class="emas kanji"><h3>今年の漢字 — 二〇二六年</h3><p class="small muted">ふたりの2026年を、それぞれ漢字一文字で。ふたりとも決めると、清水の舞台のように同時に発表されます。大晦日の夜にどうぞ。</p>
+   <div class="kj-row">${board("sai")}${board("yui")}</div>
+   ${S.canWrite&&me?`<form class="kj-form" id="kanji-form"><input id="kanji-in" class="kj-ch" maxlength="1" placeholder="字" value="${esc(K[me]?.ch||"")}" aria-label="漢字一文字"><input id="kanji-why" maxlength="40" placeholder="えらんだ理由（例：旅をたくさんしたから）" value="${esc(K[me]?.why||"")}"><button class="btn mini" type="submit">${K[me]?"書きなおす":"決める"}</button></form>`:""}</section>`}
+/* ---------- 書き初め（指で書ける筆） ---------- */
+function kakizomeCardHTML(){return `<section class="emas kz-card"><h3>書き初め</h3><p class="small muted">指で書ける筆です。ゆっくり書くと太く、速く書くとかすれます。新年の抱負や今年の一文字を半紙に。できた作品は画像で保存して、アルバムにも入れられます。</p><button class="btn" id="kz-open">筆をとる</button></section>`}
+const KZ={strokes:[],size:1,red:false};
+function openKakizome(){
+  $("#layer2").innerHTML=`<div class="modal top"><div class="box kz"><div class="ed-head"><h2>書き初め</h2><button class="x" id="kz-close" aria-label="とじる">×</button></div>
+   <div class="kz-paper"><canvas id="kz-cv" width="900" height="1260" aria-label="半紙"></canvas></div>
+   <div class="kz-tools"><div class="kz-seg" role="group" aria-label="筆の太さ"><button data-kzs="0.6">細</button><button data-kzs="1" class="on">中</button><button data-kzs="1.6">太</button></div>
+     <button class="btn mini ghost" id="kz-red">朱</button><button class="btn mini ghost" id="kz-undo">一画もどす</button><button class="btn mini ghost" id="kz-clear">白紙にする</button></div>
+   <div class="kz-foot"><button class="btn sea" id="kz-save">画像で保存</button>${S.canWrite&&S.assets?`<button class="btn pink" id="kz-album">アルバムに入れる</button>`:""}</div>
+  </div></div>`;
+  const cv=$("#kz-cv"),g=cv.getContext("2d");KZ.strokes=[];KZ.size=1;KZ.red=false;
+  const paper=()=>{g.fillStyle="#fbf8f0";g.fillRect(0,0,cv.width,cv.height);g.globalAlpha=.05;for(let i=0;i<900;i++){g.fillStyle=i%2?"#8a7a60":"#fff";const x=Math.random()*cv.width,y=Math.random()*cv.height;g.fillRect(x,y,1+Math.random()*26,1)}g.globalAlpha=1};
+  paper();let base=g.getImageData(0,0,cv.width,cv.height);
+  const snap=()=>{KZ.strokes.push(g.getImageData(0,0,cv.width,cv.height));if(KZ.strokes.length>12)KZ.strokes.shift()};
+  const pos=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*cv.width,(e.clientY-r.top)/r.height*cv.height]};
+  let last=null,w=0,bristle=[];
+  const dab=(x,y,rad,dry,ang)=>{const col=KZ.red?"181,52,42":"22,20,24";
+    g.fillStyle=`rgba(${col},${.9-dry*.25})`;if(dry<.7){g.fillStyle=`rgba(${col},${(.92*(1-dry*1.2)).toFixed(2)})`;g.beginPath();g.arc(x,y,rad*(1-dry*.25),0,7);g.fill()}
+    const nx=Math.cos(ang+Math.PI/2),ny=Math.sin(ang+Math.PI/2);            // かすれ：毛の一本ずつ
+    for(let i=0;i<bristle.length;i++){const b=bristle[i];if(Math.random()<dry*b.d)continue;const o=(i/(bristle.length-1)*2-1)*rad;g.fillStyle=`rgba(${col},${.55+Math.random()*.4})`;g.beginPath();g.arc(x+nx*o+(Math.random()-.5)*1.5,y+ny*o+(Math.random()-.5)*1.5,Math.max(.8,rad*.12*b.w),0,7);g.fill()}};
+  const down=e=>{e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch{}snap();const [x,y]=pos(e);bristle=Array.from({length:22},()=>({d:.5+Math.random()*1.3,w:.6+Math.random()*1.1}));w=34*KZ.size;last={x,y,t:performance.now()};dab(x,y,w*1.05,0,0);g.fillStyle=KZ.red?"rgba(181,52,42,.25)":"rgba(22,20,24,.2)";g.beginPath();g.arc(x,y,w*1.3,0,7);g.fill()};
+  const move=e=>{if(!last)return;e.preventDefault();const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const ev of evs){const [x,y]=pos(ev),now=performance.now();const dx=x-last.x,dy=y-last.y,dist=Math.hypot(dx,dy);if(dist<1)continue;const sp=dist/Math.max(1,now-last.t);
+      const target=Math.max(13,46-sp*11)*KZ.size*(ev.pressure&&ev.pointerType==="pen"?(.5+ev.pressure):1);const dry=Math.max(0,Math.min(1,(sp-1.9)/3));const ang=Math.atan2(dy,dx);const n=Math.ceil(dist/2);
+      for(let i=1;i<=n;i++){w+=(target-w)*.06;dab(last.x+dx*i/n,last.y+dy*i/n,w,dry,ang)}last={x,y,t:now}}};
+  const up=()=>{if(!last)return;last=null};
+  cv.addEventListener("pointerdown",down);cv.addEventListener("pointermove",move);cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
+  const close=()=>{$("#layer2").innerHTML=""};$("#kz-close").onclick=close;
+  $("#layer2").querySelectorAll("[data-kzs]").forEach(b=>b.onclick=()=>{KZ.size=+b.dataset.kzs;$("#layer2").querySelectorAll("[data-kzs]").forEach(x=>x.classList.toggle("on",x===b));beep("tap")});
+  $("#kz-red").onclick=()=>{KZ.red=!KZ.red;$("#kz-red").classList.toggle("on",KZ.red);beep("tap")};
+  $("#kz-undo").onclick=()=>{const s=KZ.strokes.pop();if(s){g.putImageData(s,0,0);beep("tap")}};
+  $("#kz-clear").onclick=()=>{snap();g.putImageData(base,0,0);beep("tap")};
+  const exportBlob=async()=>{const W=1080,H=1512,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");x.fillStyle="#1d2a44";x.fillRect(0,0,W,H);x.shadowColor="rgba(0,0,0,.45)";x.shadowBlur=30;x.shadowOffsetY=10;x.drawImage(cv,90,96,900,1260);x.shadowColor="transparent";
+    try{await document.fonts.load('44px "Yuji Syuku"')}catch{}x.fillStyle="#b5342a";rr(x,880,1238,84,84,8);x.fill();x.fillStyle="#fbf8f0";x.font='400 56px "Yuji Syuku",serif';x.textAlign="center";x.fillText(S.who==="yui"?"結":"才",922,1300);
+    x.fillStyle="rgba(251,248,240,.75)";x.font='700 26px "Zen Old Mincho",serif';x.fillText("令和九年 書き初め",W/2,1462);return await new Promise(res=>c.toBlob(res,"image/jpeg",.92))};
+  $("#kz-save").onclick=async()=>{try{await downloadBlob("kakizome-2027.jpg",await exportBlob());beep("clear")}catch(e){if(!(e&&e.code==="declined"))toast("保存できませんでした")}};
+  $("#kz-album")?.addEventListener("click",async()=>{const b=$("#kz-album");b.disabled=true;toast("アルバムに入れています…");try{const bl=await exportBlob();await uploadPhoto(new File([bl],"kakizome.jpg",{type:"image/jpeg"}),{day:null});confetti();beep("clear");toast("アルバムに入れました");close()}catch(err){b.disabled=false;upErr(err)}});
+}
+/* ---------- 一年後のふたりへ（タイムカプセル。2027年の大晦日にひらく） ---------- */
+const CAPSULE_OPEN=Date.UTC(2027,11,30,15); // 2027/12/31 00:00 JST
+function capsuleHTML(){const me=S.who,o=other(me||"sai"),C=S.capsule||{};const open=Date.now()>=CAPSULE_OPEN;const days=Math.max(0,Math.ceil((CAPSULE_OPEN-Date.now())/864e5));
+  const slot=w=>`<div class="cp-slot ${C[w]?"in":""}"><img src="${MII[w]}" alt=""><b>${NAME[w]}</b><small>${C[w]?(open?"":"しまってあります"):"まだ入っていません"}</small>${open&&C[w]?`<div class="cp-text">${esc(C[w].text)}</div>`:""}</div>`;
+  return `<section class="emas capsule"><h3>一年後のふたりへ</h3><p class="small muted">${open?"タイムカプセルがひらきました。一年前のふたりからの手紙です。":`2027年の大晦日にひらくタイムカプセル。あと <b>${days}</b> 日。入れたあとは、自分の手紙もひらく日まで読めません。`}</p>
+   <div class="cp-row">${slot("sai")}${slot("yui")}</div>
+   ${!open&&S.canWrite&&me?`<form class="cp-form" id="capsule-form"><textarea id="capsule-in" maxlength="1500" placeholder="${C[me]?"書きなおすと、前の手紙と入れかわります":"一年後のふたりへ。いまの気持ち、来年かなえたいこと、相手へのひとこと。"}">${esc(S.drafts.capsule||"")}</textarea><button class="btn" type="submit">${C[me]?"入れなおす":"カプセルに入れる"}</button></form>`:""}</section>`}
 function emaHTML(){const me=S.who,o=other(me||"sai");const E=S.ema||{};
   const board=w=>{const x=E[w];return `<div class="ema ${x?"":"blank"}"><span class="ema-hole"></span><div class="ema-t">${x?esc(x.text):"まだ書いていません"}</div><div class="ema-n">${NAME[w]}</div></div>`};
   return `<section class="emas"><h3>絵馬 — 二〇二七年の抱負</h3><p class="small muted">今年やりたいこと・願いごとを一枚ずつ。初詣のあとに書くのがおすすめ。相手の絵馬もいつでも見られます。</p>
    <div class="ema-row">${board("sai")}${board("yui")}</div>
    ${S.canWrite&&me?`<form class="ema-form" id="ema-form"><input id="ema-in" maxlength="40" placeholder="例：ふたりでまた旅行に行く" value="${esc(E[me]?.text||"")}"><button class="btn mini" type="submit">${E[me]?"書きなおす":"奉納する"}</button></form>`:""}</section>`}
-$("#v-diary").addEventListener("submit",async e=>{if(e.target.id!=="ema-form")return;e.preventDefault();const v=$("#ema-in").value.trim();if(!v)return;try{await S.db.doc("ema/"+S.who).set({text:v.slice(0,40),at:Date.now()});beep("clear");suzu(.1);toast("絵馬を奉納しました")}catch(err){writeErr(err)}});
+$("#v-diary").addEventListener("submit",async e=>{
+  if(e.target.id==="kanji-form"){e.preventDefault();const ch=[...$("#kanji-in").value.trim()][0];if(!ch){toast("一文字いれてね");return}const had=!!(S.kanji||{})[other(S.who)];try{await S.db.doc("kanji/"+S.who).set({ch,why:$("#kanji-why").value.trim().slice(0,40),at:Date.now()});beep("clear");if(had){confetti();bonsho(1);toast("今年の漢字、発表！")}else toast("決めました。相手が決めると発表されます")}catch(err){writeErr(err)}return}
+  if(e.target.id==="capsule-form"){e.preventDefault();const v=$("#capsule-in").value.trim();if(!v){toast("ひとことだけでも書いてね");return}try{await S.db.doc("capsule/"+S.who).set({text:v,at:Date.now()});delete S.drafts.capsule;$("#capsule-in").value="";beep("clear");suzu(.1);toast("カプセルに入れました。2027年の大晦日にひらきます")}catch(err){writeErr(err)}return}
+  if(e.target.id!=="ema-form")return;e.preventDefault();const v=$("#ema-in").value.trim();if(!v)return;try{await S.db.doc("ema/"+S.who).set({text:v.slice(0,40),at:Date.now()});beep("clear");suzu(.1);toast("絵馬を奉納しました")}catch(err){writeErr(err)}});
 $("#v-diary").addEventListener("click",async e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.dd){beep("tap");S.diaryDay=+t.dataset.dd;renderDiary();return}
+  if(t.id==="kz-open"){beep("open");openKakizome();return}
   if(t.dataset.mood){beep("tap");const cur=S.drafts["mood:"+S.diaryDay]??S.diary[`d${S.diaryDay}_${S.who}`]?.mood??"";S.drafts["mood:"+S.diaryDay]=cur===t.dataset.mood?"":t.dataset.mood;const v=$("#diary-in")?.value;if(v!=null)S.drafts["diary:"+S.diaryDay]=v;render();return}
   if(t.dataset.dph){const list=S.photos.filter(p=>p.day===S.diaryDay);openLB(list,Math.max(0,list.findIndex(p=>p.id===t.dataset.dph)));return}
   if(t.dataset.hanko){try{await S.db.doc("diary/"+t.dataset.hanko).update({stamps:{[S.who]:true}});beep("stamp");toast("はんこを押しました")}catch(err){writeErr(err)}return}
@@ -3036,8 +3111,10 @@ async function start(session){
   db.doc("config/secret").onSnapshot(d=>{S.secret=d.exists?d.data().msg:null;if(S.view==="stamp")safeRender()});
   db.doc("prep/items").onSnapshot(d=>{S.items=d.exists?d.data():null;if(S.view==="plan")safeRender()});
   // 入力欄にカーソルがあっても、買い出しリストと絵馬はすぐ描き直す（入力中の文字とカーソルは保つ）
-  const renderKeep=id=>{const a=document.activeElement;if(a&&(a.id===id||a.dataset?.shop)){const was=a.id===id;render();if(was){const el=document.getElementById(id);if(el)el.focus()}}else safeRender()};
+  const renderKeep=id=>{const a=document.activeElement;if(a&&(a.id===id||a.dataset?.shop||(a.closest&&a.closest("form")&&a.closest("form").contains(document.getElementById(id))))){const fid=a.id;render();if(fid){const el=document.getElementById(fid);if(el)el.focus()}}else safeRender()};
   db.doc("prep/shop").onSnapshot(d=>{S.shop=d.exists?d.data():null;if(S.view==="plan")renderKeep("shop-in")});
+  sub("kanji",s=>{S.kanji={};s.docs.forEach(d=>S.kanji[d.id]=d.data());if(S.view==="diary")renderKeep("kanji-in")});
+  sub("capsule",s=>{S.capsule={};s.docs.forEach(d=>S.capsule[d.id]=d.data());if(S.view==="diary")renderKeep("capsule-in")});
   sub("ema",s=>{S.ema={};s.docs.forEach(d=>S.ema[d.id]=d.data());if(S.view==="diary")renderKeep("ema-in")});
   sub("letters",s=>{S.letters={};s.docs.forEach(d=>S.letters[d.id]=d.data());if(S.view==="diary"||S.view==="plan")safeRender()});
   sub("best",s=>{S.best={};s.docs.forEach(d=>S.best[d.id]=d.data());if(S.view==="album"||S.view==="plan"||S.view==="result")safeRender();if(S.lb)drawLB()});
