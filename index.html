@@ -891,6 +891,28 @@ h3{font-weight:900}
   .head .aside .btn.mini{font-size:12.5px;padding:7px 10px}
   .tabs{width:calc(100vw - 16px);padding:6px}.tabs .in{gap:4px}.tab{font-size:10px;padding:8px 0 6px;border-radius:16px}.tab svg{width:24px;height:24px}
 }
+
+/* ============ 交換日記（便箋・お題・気分・はんこ） ============ */
+.dprog{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px}
+.dp{border:0;background:rgba(43,36,32,.06);border-radius:12px;padding:6px 0 7px;display:grid;justify-items:center;gap:4px;min-height:48px}
+.dp small{font-size:11.5px;font-weight:900}.dp span{display:flex;gap:4px}.dp i{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--c);background:transparent}.dp i.w{background:var(--c)}
+.dp.on{background:var(--ink);color:#fff}.dp.both{box-shadow:inset 0 0 0 2px var(--kin)}
+.dq{background:linear-gradient(135deg,#fff,#fbf3e6);border-radius:16px;padding:12px 14px;margin-bottom:12px;box-shadow:var(--soft);border-left:5px solid var(--hibiscus)}
+.dq-l{display:block;font-size:11px;font-weight:900;color:var(--hibiscus);letter-spacing:.14em}.dq b{display:block;font-family:var(--pop);font-size:17px;line-height:1.5}.dq small{color:var(--muted);font-size:11.5px}
+.dstrip{display:flex;align-items:center;gap:8px;margin-bottom:12px;overflow-x:auto}.dstrip button{flex:0 0 auto;width:64px;height:64px;border:0;padding:0;border-radius:12px;overflow:hidden;box-shadow:var(--soft);transform:rotate(-2deg)}.dstrip button:nth-child(2n){transform:rotate(2deg)}.dstrip img{width:100%;height:100%;object-fit:cover;display:block}
+.page{border-radius:18px!important;border-top:0!important;padding:14px 16px 16px;background:#fffdf8 repeating-linear-gradient(transparent 0 31px,rgba(181,52,42,.13) 31px 32px) 0 96px!important}
+.page.sai{box-shadow:var(--soft),inset 0 5px 0 var(--sea)!important}.page.yui{box-shadow:var(--soft),inset 0 5px 0 var(--hibiscus)!important}
+.pg-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;min-height:48px}.pg-head img{height:44px;width:auto}.pg-head b{display:block;font-size:15px}.pg-head small{font-family:var(--min);font-size:11px;color:var(--muted);letter-spacing:.1em}
+.mood-seal{margin-left:auto;width:38px;height:38px;display:grid;place-items:center;border:2px solid var(--shu);color:var(--shu);border-radius:50%;font-family:var(--brush);font-size:20px;transform:rotate(-8deg)}
+.moods{display:flex;gap:6px;overflow-x:auto;margin:0 -4px 6px;padding:2px 4px;scrollbar-width:none}.moods::-webkit-scrollbar{display:none}
+.mood{flex:0 0 auto;border:0;background:rgba(43,36,32,.06);border-radius:999px;padding:5px 12px 5px 6px;font-size:12.5px;font-weight:900;display:flex;align-items:center;gap:6px;min-height:36px}
+.mood span{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#fff;color:var(--shu);font-family:var(--brush);font-size:15px}
+.mood.on{background:var(--shu);color:#fff}
+.page textarea{min-height:192px;font-size:16px;background:transparent!important;border:0!important;padding:0!important;border-radius:0!important}
+.pg-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.hanko-row{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:10px;min-height:36px}
+.hanko{width:46px;height:46px;border:2.5px solid var(--shu);color:var(--shu);border-radius:50%;display:grid;place-items:center;font-family:var(--brush);font-size:20px;line-height:1;transform:rotate(-10deg);animation:thump .5s cubic-bezier(.2,1.6,.4,1)}.hanko small{display:none}
+@media (max-width:760px){.diary{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1102,6 +1124,8 @@ const KOYOMI={
  5:{wa:"令和九年 睦月 三日",kyu:"旧暦 霜月廿六日",roku:"赤口",eto:"未",t:"三が日のおわり",x:"元日から三日までが「三が日」。おせちは、かまどの神さまを休ませるための作り置き料理。関西のお雑煮は白みそに丸もちが定番です。"},
  6:{wa:"令和九年 睦月 四日",kyu:"旧暦 霜月廿七日",roku:"先勝",eto:"未",t:"仕事始め・松の内",x:"門松を飾っておく「松の内」は、関西では1月15日まで。年神さまはまだいらっしゃいます。7日は七草がゆで、お正月に疲れた胃をいたわる日。"}
 };
+const MOODS=[["saikou","◎","最高"],["tanoshii","笑","たのしい"],["hokkori","和","ほっこり"],["onaka","満","おなかいっぱい"],["nemui","眠","ねむい"],["kandou","感","じーん"]];
+const DIARY_Q=["今日いちばん笑ったことは？","今年いちばんの思い出と、相手に伝えたい「ありがとう」は？","新年さいしょに思ったことは？ 初日の出を見てどうだった？","今年ふたりでやってみたいことは？","この数日で見つけた、相手の新しい一面は？","6日間でいちばん心にのこった瞬間は？"];
 const FORTUNES=[["大吉",3],["中吉",4],["小吉",4],["吉",5],["末吉",3]];
 function fortuneOf(seed){let h=0;for(const ch of String(seed))h=(h*31+ch.charCodeAt(0))>>>0;const tot=FORTUNES.reduce((s,f)=>s+f[1],0);let r=h%tot;for(const [n,w] of FORTUNES){if(r<w)return n;r-=w}return "吉"}
 const SHOP_PRESET=["そば（年越し用・2人前）","海老（天ぷら用）","天ぷら粉・揚げ油","めんつゆ","長ねぎ","かまぼこ","パスタ","トマト缶","にんにく・オリーブオイル","チーズ","みかん","切り餅（丸もち）","白みそ・にんじん・大根（お雑煮）","飲み物（お茶・ジュース・お酒）","お菓子・夜ふかしのおとも","朝ごはん（パン・卵）","コーヒー・ココア","ごみ袋・キッチンペーパー"];
@@ -1507,7 +1531,7 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
 function safeRender(){const a=document.activeElement;if(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main")){S.pendingRender=true;return}render()}
 document.querySelector("main").addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(S.pendingRender&&!(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main"))){S.pendingRender=false;render()}},50)});
 S.drafts={};
-document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;
+document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;if(el.id==="diary-in"){const c=document.getElementById("diary-cnt");if(c)c.textContent=el.value.length?el.value.length+"文字":""}
   if(el.id==="diary-in")S.drafts["diary:"+S.diaryDay]=el.value;else if(el.id==="letter-in")S.drafts.letter=el.value;else if(el.id==="secret-in")S.drafts.secret=el.value});
 function render(){S.pendingRender=false;const keep={};
   document.querySelectorAll("main textarea[id],main input[id]:not([type=checkbox]):not([type=file])").forEach(el=>{if(el.value!==el.defaultValue)keep[el.id]=el.value});
@@ -2393,16 +2417,27 @@ function renderDiary(){
   const both=mine&&theirs,o=other(S.who);
   const night=tripDay()===n&&jstHour()>=21&&!mine;
   const lock=`<svg viewBox="0 0 60 60" aria-hidden="true"><path d="M30 52s-20-12-20-28a11 11 0 0 1 20-6 11 11 0 0 1 20 6c0 16-20 28-20 28z" fill="#b4476b" stroke="#2b2420" stroke-width="3"/><rect x="21" y="26" width="18" height="14" rx="3" fill="#e0b84f" stroke="#2b2420" stroke-width="2.5"/><path d="M24 26v-4a6 6 0 0 1 12 0v4" fill="none" stroke="#2b2420" stroke-width="2.5"/></svg>`;
+  const k=KOYOMI[n],q=DIARY_Q[n-1],moodOf=x=>x?.mood?MOODS.find(m=>m[0]===x.mood):null;
+  const curMood=S.drafts["mood:"+n]??mine?.mood??"";
+  const prog=DAYS().map(d=>{const a=!!S.diary[`d${d.n}_sai`],b2=!!S.diary[`d${d.n}_yui`];return `<button class="dp ${d.n===n?"on":""} ${a&&b2?"both":""}" data-dd="${d.n}" aria-label="DAY${d.n}"><small>${esc(d.date)}</small><span><i class="${a?"w":""}" style="--c:var(--sea)"></i><i class="${b2?"w":""}" style="--c:var(--hibiscus)"></i></span></button>`}).join("");
+  const wrote=DAYS().filter(d=>S.diary[`d${d.n}_sai`]&&S.diary[`d${d.n}_yui`]).length;
+  const bests=["sai","yui"].map(w=>bestPhoto(n,w)).filter(Boolean);const dayPh=S.photos.filter(p=>p.day===n);const strip=(bests.length?bests.map(b=>b.p):dayPh.slice(-3));
+  const head=(w,x)=>`<div class="pg-head"><img src="${MII[w]}" alt=""><div><b>${NAME[w]}${w===S.who?"（あなた）":""}</b><small>${k?k.wa:""}</small></div>${moodOf(x)?`<span class="mood-seal" title="きょうの気分">${moodOf(x)[1]}</span>`:""}</div>`;
+  const hanko=(x,key,canStamp)=>{const st=x?.stamps||{};const mineSt=st[S.who];return `<div class="hanko-row">${Object.keys(st).filter(w=>st[w]).map(w=>`<span class="hanko ${w}">${w==="sai"?"才":"結"}<small>よみました</small></span>`).join("")}${canStamp&&!mineSt?`<button class="btn mini ghost" data-hanko="${key}">はんこを押す</button>`:""}</div>`};
   $("#v-diary").innerHTML=`
-  ${HEAD("ふたりの交換日記","var(--hibiscus)","1日1回、一言ずつ")}
-  ${dayPicker(n,"dd")}
+  ${HEAD("ふたりの交換日記","var(--hibiscus)",`ふたりで書いた日 ${wrote}/6`)}
+  <div class="dprog">${prog}</div>
+  <div class="dq"><span class="dq-l">きょうのお題</span><b>${esc(q)}</b>${k?`<small>${esc(k.t)}</small>`:""}</div>
   ${night?`<div class="banner"><span class="moon"></span>1日のしめくくり。今日の日記を書こう</div>`:""}
+  ${strip.length?`<div class="dstrip">${strip.map(p=>`<button data-dph="${p.id}" aria-label="この日の写真"><img src="${blob(p.thumb||p.full)}" alt="" loading="lazy"></button>`).join("")}<span class="small muted">${bests.length?"この日の「今日の一枚」":"この日の写真"}</span></div>`:""}
   <div class="diary">
-    <div class="page ${S.who}"><h3><img src="${MII[S.who]}" alt="">${NAME[S.who]}（あなた）</h3>
-      ${S.canWrite?`<textarea id="diary-in" maxlength="2000" placeholder="今日いちばん楽しかったことは？">${esc(S.drafts["diary:"+n]??mine?.text??"")}</textarea><button class="btn pink" id="diary-save">${mine?"書き直して保存":"書いた！"}</button>`:`<div class="body">${esc(mine?.text||"")}</div>`}
+    <div class="page ${S.who}">${head(S.who,mine)}
+      ${S.canWrite?`<div class="moods" role="group" aria-label="きょうの気分">${MOODS.map(m=>`<button type="button" class="mood ${curMood===m[0]?"on":""}" data-mood="${m[0]}" aria-pressed="${curMood===m[0]}"><span>${m[1]}</span>${m[2]}</button>`).join("")}</div>
+      <textarea id="diary-in" maxlength="2000" placeholder="${esc(q)}">${esc(S.drafts["diary:"+n]??mine?.text??"")}</textarea><div class="pg-foot"><span class="small muted" id="diary-cnt"></span><button class="btn pink" id="diary-save">${mine?"書き直して保存":"書いた！"}</button></div>`:`<div class="body">${esc(mine?.text||"")}</div>`}
+      ${both?hanko(mine,`d${n}_${S.who}`,false):""}
     </div>
-    <div class="page ${o}"><h3><img src="${MII[o]}" alt="">${NAME[o]}</h3>
-      ${both?`<div class="body">${esc(theirs.text)}</div>`:`<div class="sealed"><div>${lock}${theirs?`${NAME[o]}は書き終わったよ。<br>あなたが書くと、ふたりの日記がひらきます`:mine?`${NAME[o]}が書くのを待っています`:`ふたりとも書いたら、ここに${NAME[o]}の日記が出てきます`}</div></div>`}
+    <div class="page ${o}">${head(o,both?theirs:null)}
+      ${both?`<div class="body">${esc(theirs.text)}</div>${hanko(theirs,`d${n}_${o}`,S.canWrite)}`:`<div class="sealed"><div>${lock}${theirs?`${NAME[o]}は書き終わったよ。<br>あなたが書くと、ふたりの日記がひらきます`:mine?`${NAME[o]}が書くのを待っています`:`ふたりとも書いたら、ここに${NAME[o]}の日記が出てきます`}</div></div>`}
     </div>
   </div>
   ${emaHTML()}
@@ -2421,8 +2456,11 @@ $("#v-diary").addEventListener("submit",async e=>{if(e.target.id!=="ema-form")re
 $("#v-diary").addEventListener("click",async e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.dd){beep("tap");S.diaryDay=+t.dataset.dd;renderDiary();return}
+  if(t.dataset.mood){beep("tap");const cur=S.drafts["mood:"+S.diaryDay]??S.diary[`d${S.diaryDay}_${S.who}`]?.mood??"";S.drafts["mood:"+S.diaryDay]=cur===t.dataset.mood?"":t.dataset.mood;const v=$("#diary-in")?.value;if(v!=null)S.drafts["diary:"+S.diaryDay]=v;render();return}
+  if(t.dataset.dph){const list=S.photos.filter(p=>p.day===S.diaryDay);openLB(list,Math.max(0,list.findIndex(p=>p.id===t.dataset.dph)));return}
+  if(t.dataset.hanko){try{await S.db.doc("diary/"+t.dataset.hanko).update({stamps:{[S.who]:true}});beep("stamp");toast("はんこを押しました")}catch(err){writeErr(err)}return}
   if(t.id==="diary-save"){const v=$("#diary-in").value.trim();if(!v){toast("一言だけでも書いてね");return}
-    try{await S.db.doc(`diary/d${S.diaryDay}_${S.who}`).set({text:v,who:S.who,at:Date.now()});delete S.drafts["diary:"+S.diaryDay];toast("保存しました");beep("clear");if(S.diary[`d${S.diaryDay}_${other(S.who)}`]){confetti();beep("open");cheer("日記がひらいた！","見せて見せて！")}else react("diary")}catch(err){writeErr(err)}}
+    try{await S.db.doc(`diary/d${S.diaryDay}_${S.who}`).set({text:v,who:S.who,at:Date.now(),mood:S.drafts["mood:"+S.diaryDay]??S.diary[`d${S.diaryDay}_${S.who}`]?.mood??""});delete S.drafts["diary:"+S.diaryDay];delete S.drafts["mood:"+S.diaryDay];toast("保存しました");beep("clear");if(S.diary[`d${S.diaryDay}_${other(S.who)}`]){confetti();beep("open");cheer("日記がひらいた！","見せて見せて！")}else react("diary")}catch(err){writeErr(err)}}
   if(t.id==="letter-save"){const v=$("#letter-in").value.trim();if(!v){toast("一言だけでも書いてね");return}
     try{await S.db.doc(`letters/${S.who}`).set({text:v,who:S.who,at:Date.now()});delete S.drafts.letter;toast("手紙をしまいました。最終日の夜にひらきます");beep("clear");react("letter")}catch(err){writeErr(err)}}
 });
