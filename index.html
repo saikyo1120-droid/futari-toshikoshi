@@ -931,6 +931,12 @@ h3{font-weight:900}
 .cp-slot.in{background:linear-gradient(160deg,#2a2d4a,#3b2a5a);color:#f7f1e6;border:0;box-shadow:var(--soft)}.cp-slot img{height:46px;width:auto}.cp-slot small{font-size:11.5px;opacity:.8}
 .cp-text{white-space:pre-wrap;text-align:left;font-size:13.5px;line-height:1.8;margin-top:6px;background:rgba(255,255,255,.1);border-radius:10px;padding:8px 10px;width:100%}
 .cp-form{display:grid;gap:8px}.cp-form textarea{min-height:120px;font:inherit;font-size:16px;line-height:1.7;resize:vertical;width:100%}
+
+/* ============ 夜ふかしリスト ============ */
+.night .shop-add{flex-wrap:wrap}.nt-seg{width:100%}.nt-seg button{flex:1;font-family:var(--body);font-weight:900;font-size:13.5px}
+.nt-pick{background:linear-gradient(150deg,#2a2d4a,#4a2a5a);color:#f7f1e6;border-radius:14px;padding:14px;text-align:center;margin:8px 0;display:grid;gap:2px;animation:pop .3s}
+.nt-pick small{color:var(--kin);font-weight:900;letter-spacing:.2em;font-size:11px}.nt-pick b{font-family:var(--pop);font-size:22px;line-height:1.4}.nt-pick span{font-size:12px;opacity:.8}
+.shop-list li.hit{background:rgba(224,184,79,.22);border-radius:10px;margin:0 -8px;padding:0 8px}
 </style>
 </head>
 <body>
@@ -2105,7 +2111,7 @@ function renderPlan(){
   const kept=keepPlanMap();
   $("#v-plan").innerHTML=`
   ${tdDay?todayHTML(tdDay,preview):""}
-  <nav class="jump" aria-label="この画面の中を移動"><button data-jump=".mapbox">地図と予定</button><button data-jump=".gacha">おみくじ</button><button data-jump=".shop">買い出し</button><button data-jump=".items">持ち物</button><button data-guide="1">初詣のてびき</button></nav>
+  <nav class="jump" aria-label="この画面の中を移動"><button data-jump=".mapbox">地図と予定</button><button data-jump=".gacha">おみくじ</button><button data-jump=".shop">買い出し</button><button data-jump=".night">夜ふかし</button><button data-jump=".items">持ち物</button><button data-guide="1">初詣のてびき</button></nav>
   ${HEAD("年越しのしおり","var(--shu)",`${!tdDay&&preview?`<button class="btn mini ghost" id="td-try">当日モードをためす</button> `:""}${S.canWrite?`<button class="btn mini" id="edit-day">この日を編集</button>`:""}`)}
   <div class="mapbox">
     <div class="map-col">
@@ -2133,6 +2139,7 @@ function renderPlan(){
   </div>
   ${gachaHTML(d)}
   ${shopHTML()}
+  ${nightHTML()}
   ${itemsHTML()}
   <div class="head" style="margin-top:22px"><span class="tag" style="--c:var(--hibiscus)">ふたりのきろく</span></div>
   ${statusHTML()}
@@ -2166,9 +2173,22 @@ function shopHTML(){
    ${items.length?`<ul class="shop-list">${sorted.map(i=>`<li class="${i.done?"done":""}"><label><input type="checkbox" data-shop="${i.id}" ${i.done?"checked":""} ${S.canWrite?"":"disabled"}><span>${esc(i.t)}</span></label><small>${NAME[i.by]||""}</small>${S.canWrite?`<button class="shop-x" data-shopdel="${i.id}" aria-label="${esc(i.t)}を消す">×</button>`:""}</li>`).join("")}</ul>`:`<div class="small muted" style="margin:6px 0">まだ空っぽ。12/30の買い出しの前に、ふたりで足していこう。</div>`}
    ${S.canWrite?`<div class="shop-foot">${items.length<6?`<button class="btn mini ghost" id="shop-preset">年越しセット（そば・イタリアン・お雑煮）を入れる</button>`:""}${items.some(i=>i.done)?`<button class="btn mini ghost" id="shop-clear">買ったものを片づける</button>`:""}</div>`:""}
   </section>`}
+/* ---------- 夜ふかしリスト（映画・ゲームの候補と、くじ） ---------- */
+const NIGHT=()=>S.night?.items||[];const NK={movie:"映画",game:"ゲーム",other:"そのほか"};
+function nightHTML(){const items=NIGHT(),todo=items.filter(i=>!i.done);const k=S.nightKind||"movie";const pick=S.nightPick&&items.find(i=>i.id===S.nightPick);
+  return `<section class="shop night"><div class="shop-h"><h3>夜ふかしリスト</h3><span class="small">${items.length?`のこり <b>${todo.length}</b> / ${items.length}`:"見たい映画・やりたいゲームを入れておこう"}</span></div>
+   ${pick?`<div class="nt-pick"><small>今夜はこれ！</small><b>${esc(pick.t)}</b><span>${NK[pick.k]||""}・${NAME[pick.by]||""}のおすすめ</span></div>`:""}
+   ${S.canWrite?`<form class="shop-add" id="night-form"><div class="kz-seg nt-seg">${Object.entries(NK).map(([v,l])=>`<button type="button" data-nk="${v}" class="${k===v?"on":""}">${l}</button>`).join("")}</div><input id="night-in" maxlength="40" placeholder="タイトルを入れる" autocomplete="off"><button class="btn mini" type="submit">足す</button></form>`:""}
+   ${items.length?`<ul class="shop-list">${[...items].sort((a,b)=>(!!a.done)-(!!b.done)||(a.at||0)-(b.at||0)).map(i=>`<li class="${i.done?"done":""} ${pick&&pick.id===i.id?"hit":""}"><label><input type="checkbox" data-night="${i.id}" ${i.done?"checked":""} ${S.canWrite?"":"disabled"}><span>${esc(i.t)}</span></label><small>${NK[i.k]||""}・${NAME[i.by]||""}</small>${S.canWrite?`<button class="shop-x" data-nightdel="${i.id}" aria-label="${esc(i.t)}を消す">×</button>`:""}</li>`).join("")}</ul>`:""}
+   <div class="shop-foot">${todo.length>=2?`<button class="btn" id="night-draw">くじで決める</button>`:todo.length===1?`<span class="small muted">候補が2つ以上あると、くじで決められます</span>`:""}</div></section>`}
+async function nightSave(items){try{await S.db.doc("prep/night").set({items,by:S.who,at:Date.now()})}catch(err){writeErr(err)}}
+function nightDraw(){const todo=NIGHT().filter(i=>!i.done);if(todo.length<2)return;const win=todo[Math.floor(Math.random()*todo.length)];let n=0;const total=matchMedia("(prefers-reduced-motion: reduce)").matches?1:14;
+  const tick=()=>{n++;S.nightPick=n>=total?win.id:todo[n%todo.length].id;beep(n>=total?"open":"tap");renderPlan();document.querySelector(".night")?.scrollIntoView({block:"nearest"});if(n<total)setTimeout(tick,70+n*14);else{confetti();say(S.who||"sai",`今夜は「${win.t.length>10?win.t.slice(0,10)+"…":win.t}」！`,{fx:"sparkle",anim:"bigjump"})}};tick()}
 async function shopSave(items){try{await S.db.doc("prep/shop").set({items,by:S.who,at:Date.now()})}catch(err){writeErr(err)}}
-$("#v-plan").addEventListener("submit",e=>{if(e.target.id!=="shop-form")return;e.preventDefault();const el=$("#shop-in");const v=el.value.trim();if(!v)return;el.value="";beep("tap");shopSave([...SHOP(),{id:uid()+uid(),t:v.slice(0,40),by:S.who,at:Date.now(),done:false}]).then(()=>$("#shop-in")?.focus())});
-$("#v-plan").addEventListener("change",e=>{const id=e.target.dataset?.shop;if(!id)return;beep(e.target.checked?"clear":"tap");shopSave(SHOP().map(i=>i.id===id?{...i,done:e.target.checked,doneBy:S.who}:i))});
+$("#v-plan").addEventListener("submit",e=>{if(e.target.id==="night-form"){e.preventDefault();const el=$("#night-in");const v=el.value.trim();if(!v)return;el.value="";beep("tap");nightSave([...NIGHT(),{id:uid()+uid(),t:v.slice(0,40),k:S.nightKind||"movie",by:S.who,at:Date.now(),done:false}]);return}
+  if(e.target.id!=="shop-form")return;e.preventDefault();const el=$("#shop-in");const v=el.value.trim();if(!v)return;el.value="";beep("tap");shopSave([...SHOP(),{id:uid()+uid(),t:v.slice(0,40),by:S.who,at:Date.now(),done:false}]).then(()=>$("#shop-in")?.focus())});
+$("#v-plan").addEventListener("change",e=>{const nid=e.target.dataset?.night;if(nid){beep(e.target.checked?"clear":"tap");if(S.nightPick===nid&&e.target.checked)S.nightPick=null;nightSave(NIGHT().map(i=>i.id===nid?{...i,done:e.target.checked}:i));return}
+  const id=e.target.dataset?.shop;if(!id)return;beep(e.target.checked?"clear":"tap");shopSave(SHOP().map(i=>i.id===id?{...i,done:e.target.checked,doneBy:S.who}:i))});
 /* ---------- 持ち物リスト ---------- */
 function itemsHTML(){
   const items=ITEMS(),me=S.who;
@@ -2249,6 +2269,9 @@ $("#v-plan").addEventListener("click",async e=>{
   if(t.id==="locate"){locateMe();return}
   if(t.dataset.jump){beep("tap");document.querySelector(t.dataset.jump)?.scrollIntoView({behavior:"smooth",block:"start"});return}
   if(t.dataset.guide){beep("open");openGuide();return}
+  if(t.dataset.nk){S.nightKind=t.dataset.nk;const v=$("#night-in")?.value||"";renderPlan();const el=$("#night-in");if(el){el.value=v;el.focus()}return}
+  if(t.dataset.nightdel){beep("tap");nightSave(NIGHT().filter(i=>i.id!==t.dataset.nightdel));return}
+  if(t.id==="night-draw"){nightDraw();return}
   if(t.dataset.shopdel){beep("tap");shopSave(SHOP().filter(i=>i.id!==t.dataset.shopdel));return}
   if(t.id==="shop-preset"){beep("open");const have=new Set(SHOP().map(i=>i.t));shopSave([...SHOP(),...SHOP_PRESET.filter(x=>!have.has(x)).map((x,k)=>({id:uid()+uid(),t:x,by:S.who,at:Date.now()+k,done:false}))]);return}
   if(t.id==="shop-clear"){beep("tap");shopSave(SHOP().filter(i=>!i.done));return}
@@ -3111,8 +3134,9 @@ async function start(session){
   db.doc("config/secret").onSnapshot(d=>{S.secret=d.exists?d.data().msg:null;if(S.view==="stamp")safeRender()});
   db.doc("prep/items").onSnapshot(d=>{S.items=d.exists?d.data():null;if(S.view==="plan")safeRender()});
   // 入力欄にカーソルがあっても、買い出しリストと絵馬はすぐ描き直す（入力中の文字とカーソルは保つ）
-  const renderKeep=id=>{const a=document.activeElement;if(a&&(a.id===id||a.dataset?.shop||(a.closest&&a.closest("form")&&a.closest("form").contains(document.getElementById(id))))){const fid=a.id;render();if(fid){const el=document.getElementById(fid);if(el)el.focus()}}else safeRender()};
+  const renderKeep=id=>{const a=document.activeElement;if(a&&(a.id===id||a.dataset?.shop||a.dataset?.night||(a.closest&&a.closest("form")&&a.closest("form").contains(document.getElementById(id))))){const fid=a.id;render();if(fid){const el=document.getElementById(fid);if(el)el.focus()}}else safeRender()};
   db.doc("prep/shop").onSnapshot(d=>{S.shop=d.exists?d.data():null;if(S.view==="plan")renderKeep("shop-in")});
+  db.doc("prep/night").onSnapshot(d=>{S.night=d.exists?d.data():null;if(S.view==="plan")renderKeep("night-in")});
   sub("kanji",s=>{S.kanji={};s.docs.forEach(d=>S.kanji[d.id]=d.data());if(S.view==="diary")renderKeep("kanji-in")});
   sub("capsule",s=>{S.capsule={};s.docs.forEach(d=>S.capsule[d.id]=d.data());if(S.view==="diary")renderKeep("capsule-in")});
   sub("ema",s=>{S.ema={};s.docs.forEach(d=>S.ema[d.id]=d.data());if(S.view==="diary")renderKeep("ema-in")});
