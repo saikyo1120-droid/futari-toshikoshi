@@ -90,7 +90,7 @@ body[data-sky="day"] .snowfall i{opacity:.6}
 .skytint,.stars,.moonbig,.glints,.softcloud{display:none}
 
 /* ============ ロゴ（筆文字＋水引） ============ */
-.logo{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:3;width:min(82%,420px);aspect-ratio:740/430;container-type:inline-size;
+.logo{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:3;width:min(72%,380px);aspect-ratio:740/430;container-type:inline-size;
   filter:drop-shadow(0 6px 14px rgba(0,0,0,.45));animation:logo-in 1.1s cubic-bezier(.2,1.2,.4,1) both}
 @keyframes logo-in{from{transform:translateX(-50%) translateY(-16px);opacity:0}to{transform:translateX(-50%);opacity:1}}
 .lg-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
@@ -163,6 +163,43 @@ body[data-sky="day"] .snowfall i{opacity:.6}
 .bubble.talk.show{opacity:1;transform:translateX(-50%) scale(1)}
 .mii.yui .bubble.talk{background:#fff0f5}.mii.yui .bubble.talk::after{background:#fff0f5}
 
+/* ============ 和柄・暦・買い出し・絵馬・てびき ============ */
+body{--seigaiha:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='40'%3E%3Cg fill='none' stroke='%23c9a24a' stroke-opacity='.11' stroke-width='1.3'%3E%3Cpath d='M0 40a40 40 0 0 1 80 0M10 40a30 30 0 0 1 60 0M20 40a20 20 0 0 1 40 0M30 40a10 10 0 0 1 20 0M-40 20a40 40 0 0 1 80 0M-30 20a30 30 0 0 1 60 0M-20 20a20 20 0 0 1 40 0M40 20a40 40 0 0 1 80 0M50 20a30 30 0 0 1 60 0M60 20a20 20 0 0 1 40 0'/%3E%3C/g%3E%3C/svg%3E");background-image:var(--seigaiha);background-size:80px 40px}
+.board-wrap{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97'%3E%3Cg fill='none' stroke='%23b5342a' stroke-opacity='.045' stroke-width='1'%3E%3Cpath d='M28 0v97M0 16.2l56 32.3M56 16.2L0 48.5M0 80.8l56-32.3M56 80.8L0 48.5M0 16.2v64.6M56 16.2v64.6M28 0L0 16.2M28 0l28 16.2M28 97L0 80.8M28 97l28-16.2'/%3E%3C/g%3E%3C/svg%3E"),radial-gradient(circle at 10% 0,rgba(201,162,74,.12),transparent 40%)}
+.head .tag{position:relative;padding-left:26px}.head .tag::before{content:"";position:absolute;left:9px;top:50%;width:9px;height:9px;transform:translateY(-50%) rotate(45deg);background:var(--kin)}
+.ribbon .wa{display:block;width:100%;font-family:var(--min);font-size:11.5px;letter-spacing:.18em;opacity:.85;margin-top:2px}
+.jump{display:flex;gap:6px;overflow-x:auto;margin:0 0 12px;padding-bottom:2px;scrollbar-width:none}.jump::-webkit-scrollbar{display:none}
+.jump button{flex:0 0 auto;border:1.5px solid var(--ink);background:var(--card);border-radius:3px;padding:3px 12px;font-family:var(--min);font-weight:700;font-size:12.5px;letter-spacing:.05em}
+.jump button[data-guide]{background:var(--shu);color:#fff;border-color:var(--shu)}
+.koyomi{border:1.5px solid var(--line);border-left:5px solid var(--shu);background:var(--card);border-radius:4px;margin:8px 0;font-size:13px}
+.koyomi summary{display:flex;align-items:center;gap:10px;padding:6px 10px;cursor:pointer;list-style:none}.koyomi summary::-webkit-details-marker{display:none}
+.ky-eto{width:34px;height:34px;flex:0 0 auto;display:grid;place-items:center;background:var(--shu);color:#fff;font-family:var(--pop);font-size:20px;border-radius:4px}
+.ky-in{flex:1;min-width:0;display:grid;line-height:1.35}.ky-in b{font-family:var(--min)}.ky-in small{color:var(--muted);font-size:11px;letter-spacing:.06em}
+.ky-more{font-size:11px;font-weight:900;color:var(--shu);border:1px solid var(--shu);border-radius:3px;padding:0 6px;flex:0 0 auto}.koyomi[open] .ky-more{background:var(--shu);color:#fff}
+.koyomi p{margin:0;padding:0 12px 10px 54px;font-weight:500;line-height:1.8;font-family:var(--min)}
+.kuji{flex:0 0 auto;writing-mode:vertical-rl;font-family:var(--pop);font-size:15px;line-height:1;padding:6px 3px;min-height:44px;text-align:center;background:#f7f1e6;border:1.5px solid var(--shu);color:var(--shu);border-radius:2px;letter-spacing:.1em}
+.kuji.kon{border-color:var(--sea-deep);color:var(--sea-deep)}
+.shop{margin-top:18px;background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:12px 14px;box-shadow:3px 3px 0 var(--ink)}
+.shop-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.shop-h h3{font-size:19px}.shop-h b{color:var(--shu);font-size:16px}
+.shop-add{display:flex;gap:6px;margin:8px 0}.shop-add input{flex:1;min-width:0;border:2px solid var(--ink);border-radius:4px;padding:7px 10px;font:inherit;font-size:16px;background:#fff}
+.shop-list{list-style:none;margin:6px 0;padding:0;display:grid;gap:0}
+.shop-list li{display:flex;align-items:center;gap:8px;border-bottom:1px dashed var(--line);padding:2px 0}
+.shop-list label{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:7px 0;cursor:pointer}.shop-list input{width:22px;height:22px;accent-color:var(--shu);flex:0 0 auto}
+.shop-list li.done span{text-decoration:line-through;color:var(--muted)}.shop-list small{font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.shop-x{border:0;background:none;color:var(--muted);font-size:18px;width:32px;height:32px;flex:0 0 auto}
+.shop-foot{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.emas{margin:18px 0;background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:12px 14px}
+.emas h3{font-size:18px}.ema-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.ema{position:relative;background:linear-gradient(#e7c58d,#d9ad6b);clip-path:polygon(50% 0,100% 22%,100% 100%,0 100%,0 22%);padding:34px 10px 12px;min-height:150px;display:grid;align-content:space-between;justify-items:center;text-align:center;filter:drop-shadow(2px 3px 0 rgba(43,36,32,.5))}
+.ema-hole{position:absolute;top:10px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#b5342a}
+.ema-t{font-family:var(--pop);font-size:16px;line-height:1.5;color:#2b2420;word-break:break-all}.ema.blank .ema-t{font-family:var(--body);font-size:12px;opacity:.6}
+.ema-n{font-family:var(--min);font-size:12px;border-top:1px solid rgba(43,36,32,.4);padding-top:3px;width:80%}
+.ema-form{display:flex;gap:6px}.ema-form input{flex:1;min-width:0;border:2px solid var(--ink);border-radius:4px;padding:7px 10px;font:inherit;font-size:16px;background:#fff}
+.box.guide{max-width:560px}.gsteps{list-style:none;margin:10px 0;padding:0;display:grid;gap:8px}
+.gsteps li{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1.5px solid var(--line);border-radius:4px;padding:8px 10px}
+.gn{width:32px;height:32px;flex:0 0 auto;display:grid;place-items:center;background:var(--shu);color:#fff;font-family:var(--pop);font-size:18px;border-radius:50%}
+.gsteps b{font-family:var(--min);font-size:15px}.gsteps p{margin:2px 0 0;font-size:13px;font-weight:500;line-height:1.7}
+.gnote{font-size:12.5px;font-weight:500;line-height:1.75;border-left:4px solid var(--kin);background:#fff;padding:8px 10px;margin-top:8px}.gnote b{color:var(--shu)}
 /* ============ 年越しカウントダウン ============ */
 .nyover{position:fixed;inset:0;z-index:90;background:rgba(15,16,26,.9);display:grid;place-items:center;color:#f7f1e6;text-align:center;backdrop-filter:blur(4px);animation:enter .4s}
 .nyover.done{background:radial-gradient(circle at 50% 40%,#b5342a,#3a1210 70%)}
@@ -793,7 +830,8 @@ section.view{position:relative}
     <rect x="312" y="314" width="10" height="150" fill="#2a1d16"/><rect x="678" y="314" width="10" height="150" fill="#2a1d16"/>
   </g>
   <!-- 鳥居（しめ縄つき） -->
-  <g class="torii">
+  <g class="pagoda" transform="translate(690 300)"><path d="M0 -150 v-34 M-4 -150 h8 l2 14 h-12z M-34 -96 Q0 -128 34 -96 L26 -92 H-26Z M-22 -92 h44 v22 h-44z M-42 -52 Q0 -86 42 -52 L33 -48 H-33Z M-26 -48 h52 v24 h-52z M-50 -6 Q0 -42 50 -6 L40 -2 H-40Z M-30 -2 h60 v26 h-60z M-58 42 Q0 4 58 42 L47 46 H-47Z M-34 46 h68 v60 h-68z" fill="var(--tree)" stroke="var(--tree)" stroke-width="3" stroke-linejoin="round"/><path d="M-34 -96 Q0 -126 34 -96 M-42 -52 Q0 -84 42 -52 M-50 -6 Q0 -40 50 -6 M-58 42 Q0 6 58 42" fill="none" stroke="#f4f6fb" stroke-width="4" stroke-linecap="round"/></g>
+  <g class="torii" transform="translate(500 0) scale(.62 1) translate(-500 0)">
     <path d="M150 470 L150 262 L170 262 L170 470 Z M830 470 L830 262 L850 262 L850 470 Z" class="pillar"/>
     <path d="M118 232 Q500 196 882 232 L882 254 Q500 218 118 254 Z" class="kasagi"/>
     <path d="M110 226 Q500 190 890 226 L890 236 Q500 200 110 236 Z" class="kasagisnow"/>
@@ -902,7 +940,7 @@ const DEFAULT_DAYS=[
    {id:"bye",t:"夕方",n:"天王寺駅で解散",d:"6日間おつかれさま。リザルトをふたりで見てね",q:"天王寺駅",stamp:false}]}
 ];
 /* ---------- 地図データ（大阪・京都） ---------- */
-const COORDS={"meet":[34.6464,135.5134],"shop":[34.6452,135.5160],"leila-in":[34.6478,135.5108],"go-kyoto":[34.6464,135.5134],"back-leila":[34.6478,135.5108],"leila-out":[34.6478,135.5108],"bye":[34.6464,135.5134],
+const COORDS={"italian":[34.6478,135.5108],"night1":[34.6478,135.5108],"wake":[34.6478,135.5108],"soba":[34.6478,135.5108],"count":[34.6478,135.5108],"zoni":[34.6478,135.5108],"last-meal":[34.6478,135.5108],"meet":[34.6464,135.5134],"shop":[34.6452,135.5160],"leila-in":[34.6478,135.5108],"go-kyoto":[34.6464,135.5134],"back-leila":[34.6478,135.5108],"leila-out":[34.6478,135.5108],"bye":[34.6464,135.5134],
  "yasaka":[35.0037,135.7788],"sunrise-go":[35.0066,135.7718],"sunrise":[35.0066,135.7718],"kyoto-walk":[35.0037,135.7747],"hatsuuri":[34.6459,135.5137],"shinsekai":[34.6525,135.5063],"shitennoji":[34.6540,135.5165]};
 const DEFAULT_Q={};DEFAULT_DAYS.forEach(d=>d.stops.forEach(s=>{if(s.q)DEFAULT_Q[s.id]=s.q}));
 const coordOf=s=>s&&typeof s.lat==="number"?{lat:s.lat,lng:s.lng}:(s&&COORDS[s.id]&&!s.noDefault)?{lat:COORDS[s.id][0],lng:COORDS[s.id][1]}:null;
@@ -1009,6 +1047,18 @@ function moonSVG(age,r=11){
 }
 const moonName=age=>age>=13.8&&age<=15.8?"ほぼ満月":age>=11&&age<13.8?"満月まぢか":age>=7&&age<11?"半月すぎ":age>=20&&age<24?"下弦の月":age>=24?"細い月（明けの空）":"三日月";
 const LETTER_OPEN=Date.UTC(2027,0,4,6); // 1/4 15:00 JST
+/* ---------- 暦と歳時記（和暦・旧暦・六曜・干支・その日のならわし） ---------- */
+const KOYOMI={
+ 1:{wa:"令和八年 師走 三十日",kyu:"旧暦 霜月廿二日",roku:"友引",eto:"午",t:"小晦日（こつごもり）",x:"大晦日の前の日。お正月の買い出しは今日までに済ませるのが昔からのならわし。29日は「苦」、31日は「一夜飾り」といって避けられてきました。"},
+ 2:{wa:"令和八年 師走 三十一日",kyu:"旧暦 霜月廿三日",roku:"先負",eto:"午",t:"大晦日・年越しそば",x:"そばは切れやすいので「一年の厄を断ち切る」、細く長いので「長生き」の縁起もの。年をまたがず、年が明ける前に食べきるのが決まり。除夜の鐘は煩悩の数の108回。"},
+ 3:{wa:"令和九年 睦月 元日",kyu:"旧暦 霜月廿四日",roku:"仏滅",eto:"未",t:"元日・初詣・初日の出",x:"八坂神社の「をけら詣り」は、をけら火を火縄に移して持ち帰り、その火で雑煮を炊いて無病息災を願う京都の年越し。初日の出は年神さまをお迎えするもの。2027年は未（ひつじ）年。"},
+ 4:{wa:"令和九年 睦月 二日",kyu:"旧暦 霜月廿五日",roku:"大安",eto:"未",t:"初夢・書き初め・初売り",x:"元日の夜から二日の朝に見る夢が初夢。「一富士二鷹三茄子」が縁起よし。二日は事始めの日で、書き初めや初売りもこの日から。"},
+ 5:{wa:"令和九年 睦月 三日",kyu:"旧暦 霜月廿六日",roku:"赤口",eto:"未",t:"三が日のおわり",x:"元日から三日までが「三が日」。おせちは、かまどの神さまを休ませるための作り置き料理。関西のお雑煮は白みそに丸もちが定番です。"},
+ 6:{wa:"令和九年 睦月 四日",kyu:"旧暦 霜月廿七日",roku:"先勝",eto:"未",t:"仕事始め・松の内",x:"門松を飾っておく「松の内」は、関西では1月15日まで。年神さまはまだいらっしゃいます。7日は七草がゆで、お正月に疲れた胃をいたわる日。"}
+};
+const FORTUNES=[["大吉",3],["中吉",4],["小吉",4],["吉",5],["末吉",3]];
+function fortuneOf(seed){let h=0;for(const ch of String(seed))h=(h*31+ch.charCodeAt(0))>>>0;const tot=FORTUNES.reduce((s,f)=>s+f[1],0);let r=h%tot;for(const [n,w] of FORTUNES){if(r<w)return n;r-=w}return "吉"}
+const SHOP_PRESET=["そば（年越し用・2人前）","海老（天ぷら用）","天ぷら粉・揚げ油","めんつゆ","長ねぎ","かまぼこ","パスタ","トマト缶","にんにく・オリーブオイル","チーズ","みかん","切り餅（丸もち）","白みそ・にんじん・大根（お雑煮）","飲み物（お茶・ジュース・お酒）","お菓子・夜ふかしのおとも","朝ごはん（パン・卵）","コーヒー・ココア","ごみ袋・キッチンペーパー"];
 
 /* ---------- ユーティリティ ---------- */
 const $=s=>document.querySelector(s);
@@ -1965,6 +2015,7 @@ function renderPlan(){
   ${tdDay?todayHTML(tdDay,preview):""}
   ${statusHTML()}
   ${newsHTML()}
+  <nav class="jump" aria-label="この画面の中を移動"><button data-jump=".mapbox">地図と予定</button><button data-jump=".gacha">おみくじ</button><button data-jump=".shop">買い出し</button><button data-jump=".items">持ち物</button><button data-guide="1">初詣のてびき</button></nav>
   ${HEAD("年越しのしおり","var(--shu)",`${!tdDay&&preview?`<button class="btn mini ghost" id="td-try">当日モードをためす</button> `:""}${S.canWrite?`<button class="btn mini" id="edit-day">この日を編集</button>`:""}`)}
   <div class="mapbox">
     <div class="map-col">
@@ -1975,10 +2026,11 @@ function renderPlan(){
     <div style="min-width:0">
       ${dayPicker(S.planDay,"pd")}
       <article class="daycard" style="--c:${DC(d.n)}">
-        <div class="ribbon"><span class="no">DAY${d.n}</span><h3>${esc(d.date)}（${esc(d.dow)}）${esc(d.title)}</h3><span class="theme">${esc(d.theme||"")}</span></div>
+        <div class="ribbon"><span class="no">DAY${d.n}</span><h3>${esc(d.date)}（${esc(d.dow)}）${esc(d.title)}</h3><span class="theme">${esc(d.theme||"")}</span>${KOYOMI[d.n]?`<span class="wa">${KOYOMI[d.n].wa}</span>`:""}</div>
         <div class="inner">
           ${bdayOf(d)?`<div class="bday">${CAKE()}<div><b>${NAME[bdayOf(d)]}の誕生日！</b><span>今日の主役は${NAME[bdayOf(d)]}。おみくじには誕生日のお題が出ます</span></div>${CAKE("r")}</div>`:""}
           ${sun?`<div class="sunrow"><span class="sr"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="14" r="5" fill="#e0b84f" stroke="#2b2420" stroke-width="1.5"/><path d="M3 19h18M12 3v3M5 7l2 2M19 7l-2 2" stroke="#2b2420" stroke-width="1.5" stroke-linecap="round"/></svg>日の出 ${sun[0]}</span><span class="sr"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="15" r="5" fill="#ff8a5c" stroke="#2b2420" stroke-width="1.5"/><path d="M3 19h18M8 21h8" stroke="#2b2420" stroke-width="1.5" stroke-linecap="round"/></svg>日の入り ${sun[1]}</span><span class="sr">${moonSVG(sun[2])}${moonName(sun[2])}${d.n===6?"（最終日の夜はほぼ満月）":""}</span></div>`:""}
+          ${koyomiHTML(d)}
           ${tdDay&&tdDay.n===d.n?"":wxStripHTML(d)+outfitLineHTML(d.n)}
           <ul class="stops">${(()=>{let last=null,no=0;return (d.stops||[]).map((s,i,arr)=>{const cur=coordOf(s);const dr=last&&cur?driveEstimate(last,cur):null;if(cur){last=cur;no++}const link=stopMapUrl(s);
             return `${dr?`<li class="drive"><span class="t"></span><div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.5-4h11L19 11M4 11h16v6H4z" fill="#fff" stroke="#2b2420" stroke-width="2" stroke-linejoin="round"/><circle cx="7.5" cy="17" r="2" fill="#2b2420"/><circle cx="16.5" cy="17" r="2" fill="#2b2420"/></svg>${dr.mode==="walk"?"歩いて":"電車で"}約${minText(dr.min)}・${dr.km}km（目安）</div></li>`:""}<li class="${S.mapFocus===s.id?"focus":""}" data-stop="${s.id}"><span class="t">${esc(s.t)}</span><div><div class="n">${cur?`<span class="pno" style="background:${DC(d.n)}">${no}</span>`:""}${esc(s.n)}${s.stamp?`<span class="st-badge">御朱印</span>`:""}${!cur&&(s.stamp||s.q)?`<span class="st-badge off">地図の位置なし</span>`:""}</div>${s.d?`<div class="d">${esc(s.d)}</div>`:""}${link?`<a href="${link}" target="_blank" rel="noopener">地図アプリでひらく</a>`:""}</div></li>`}).join("")})()||`<li class="muted small">予定がまだありません。「この日を編集」から追加してね</li>`}</ul>
@@ -1990,9 +2042,40 @@ function renderPlan(){
     </div>
   </div>
   ${gachaHTML(d)}
+  ${shopHTML()}
   ${itemsHTML()}`;
   restorePlanMap(kept);const mEl=$("#planmap");if(mEl&&!mEl.querySelector(".map-ctrl"))mEl.insertAdjacentHTML("beforeend",mapCtrlHTMLFor({touch:!!S.mapTouch}));drawPlanMap();
 }
+/* ---------- 暦・てびき・買い出しリスト ---------- */
+function koyomiHTML(d){const k=KOYOMI[d.n];if(!k)return "";
+  return `<details class="koyomi"><summary><span class="ky-eto" title="干支">${k.eto}</span><span class="ky-in"><b>${esc(k.t)}</b><small>${k.kyu}・${k.roku}</small></span><span class="ky-more">歳時記</span></summary><p>${esc(k.x)}</p></details>`}
+function openGuide(){
+  const step=(n,t,x)=>`<li><span class="gn">${n}</span><div><b>${t}</b><p>${x}</p></div></li>`;
+  $("#layer2").innerHTML=`<div class="modal top"><div class="box guide"><div class="ed-head"><h2>初詣のてびき</h2><button class="x" id="gd-close" aria-label="とじる">×</button></div>
+   <p class="small muted">八坂神社（京都・祇園）での、おまいりの流れ。むずかしく考えなくて大丈夫、気持ちがいちばん。</p>
+   <ol class="gsteps">
+    ${step("一","鳥居の前で一礼","鳥居は神さまの世界の入り口。真ん中は神さまの通り道なので、端を歩きます。")}
+    ${step("二","手水（ちょうず）で清める","右手でひしゃくを持って左手 → 持ちかえて右手 → 左手に水をうけて口をすすぐ → もう一度左手。混んでいる日は省略されることもあります。")}
+    ${step("三","お賽銭をそっと入れる","投げずに静かに。金額に決まりはなく、「ご縁」の5円が人気。")}
+    ${step("四","二礼・二拍手・一礼","深いおじぎを2回 → 胸の前で手を2回たたく → 手を合わせて、去年のお礼と今年の願いごと → 最後におじぎを1回。")}
+    ${step("五","おみくじ・お守り・甘酒","おみくじは持ち帰っても、境内に結んでもOK。古いお守りは納め所へ。")}
+   </ol>
+   <div class="gnote"><b>をけら詣り</b>：大晦日の夜〜元日の早朝、境内の「をけら灯籠」の火を火縄に移し、消えないようにくるくる回しながら持ち帰る京都の風物詩。火縄は境内で授かれます（電車には火のついたまま持ち込めないので、消してお守りとして持ち帰ります）。</div>
+   <div class="gnote"><b>夜の備え</b>：1月1日3時の京都は0℃前後。カイロ・手袋・マフラーに、あたたかい飲み物を。大晦日〜元日は関西の電車の多くが終夜運転をしますが、本数は少なめ。時刻は各社の発表を前日に確認してね。</div>
+  </div></div>`;
+  $("#gd-close").onclick=()=>{$("#layer2").innerHTML=""};
+}
+const SHOP=()=>S.shop?.items||[];
+function shopHTML(){
+  const items=SHOP(),left=items.filter(i=>!i.done).length;const sorted=[...items].sort((a,b)=>(!!a.done)-(!!b.done)||(a.at||0)-(b.at||0));
+  return `<section class="shop"><div class="shop-h"><h3>買い出しリスト</h3><span class="small">${items.length?`のこり <b>${left}</b> / ${items.length}`:"ふたりで同じリストを見られます"}</span></div>
+   ${S.canWrite?`<form class="shop-add" id="shop-form"><input id="shop-in" maxlength="40" placeholder="買うものを入れる（例：みかん）" autocomplete="off"><button class="btn mini" type="submit">足す</button></form>`:""}
+   ${items.length?`<ul class="shop-list">${sorted.map(i=>`<li class="${i.done?"done":""}"><label><input type="checkbox" data-shop="${i.id}" ${i.done?"checked":""} ${S.canWrite?"":"disabled"}><span>${esc(i.t)}</span></label><small>${NAME[i.by]||""}</small>${S.canWrite?`<button class="shop-x" data-shopdel="${i.id}" aria-label="${esc(i.t)}を消す">×</button>`:""}</li>`).join("")}</ul>`:`<div class="small muted" style="margin:6px 0">まだ空っぽ。12/30の買い出しの前に、ふたりで足していこう。</div>`}
+   ${S.canWrite?`<div class="shop-foot">${items.length<6?`<button class="btn mini ghost" id="shop-preset">年越しセット（そば・イタリアン・お雑煮）を入れる</button>`:""}${items.some(i=>i.done)?`<button class="btn mini ghost" id="shop-clear">買ったものを片づける</button>`:""}</div>`:""}
+  </section>`}
+async function shopSave(items){try{await S.db.doc("prep/shop").set({items,by:S.who,at:Date.now()})}catch(err){writeErr(err)}}
+$("#v-plan").addEventListener("submit",e=>{if(e.target.id!=="shop-form")return;e.preventDefault();const el=$("#shop-in");const v=el.value.trim();if(!v)return;el.value="";beep("tap");shopSave([...SHOP(),{id:uid()+uid(),t:v.slice(0,40),by:S.who,at:Date.now(),done:false}]).then(()=>$("#shop-in")?.focus())});
+$("#v-plan").addEventListener("change",e=>{const id=e.target.dataset?.shop;if(!id)return;beep(e.target.checked?"clear":"tap");shopSave(SHOP().map(i=>i.id===id?{...i,done:e.target.checked,doneBy:S.who}:i))});
 /* ---------- 持ち物リスト ---------- */
 function itemsHTML(){
   const items=ITEMS(),me=S.who;
@@ -2031,7 +2114,7 @@ function gachaHTML(d){
   else if(n>today)action=`<span class="small">${esc(d.date)}の朝に引けるよ</span>`;
   else action=draws.length?"":`<span class="small">この日はおみくじを引かなかったよ</span>`;
   const caps=["var(--sun)","var(--sea)","var(--hibiscus)"];
-  const list=draws.map((x,i)=>{const mm=MBYID[x.id]||{t:x.t||"?"};return `<div class="mission ${x.done?"done":""}${mm.kon?" kon":""}"><span class="cap" style="--c:${mm.kon?"var(--sea-deep)":caps[i%3]}"></span><span class="txt">${mm.kon?`<small class="konbadge">こんぺきからのお願い</small>`:""}${esc(mtext(mm,d))}</span><button class="ok" data-done="${n}:${i}" ${S.canWrite?"":"disabled"}>${x.done?"クリア！":"クリアした"}</button></div>`}).join("");
+  const list=draws.map((x,i)=>{const mm=MBYID[x.id]||{t:x.t||"?"};return `<div class="mission ${x.done?"done":""}${mm.kon?" kon":""}"><span class="kuji ${mm.kon?"kon":""}">${mm.kon?"わん吉":fortuneOf(x.id+":"+n+":"+(x.at||i))}</span><span class="txt">${mm.kon?`<small class="konbadge">こんぺきからのお願い</small>`:""}${esc(mtext(mm,d))}</span><button class="ok" data-done="${n}:${i}" ${S.canWrite?"":"disabled"}>${x.done?"クリア！":"クリアした"}</button></div>`}).join("");
   const tr=S.trial&&S.trial.n===n?`<div class="mission"><span class="cap"></span><span class="txt">${esc(mtext(MBYID[S.trial.id],d))}</span><span class="small">おためし</span></div>`:"";
   return `<div class="gacha"><h3>今日のおみくじ　DAY${n}</h3>
     <div class="gacha-stage">
@@ -2071,6 +2154,11 @@ $("#v-plan").addEventListener("click",async e=>{
     if(g==="album")S.albumDay=String(todayDay()||S.planDay);if(g==="diary")S.diaryDay=todayDay()||S.planDay;
     document.querySelector(`.tab[data-v="${g}"]`)?.click();return}
   if(t.id==="locate"){locateMe();return}
+  if(t.dataset.jump){beep("tap");document.querySelector(t.dataset.jump)?.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(t.dataset.guide){beep("open");openGuide();return}
+  if(t.dataset.shopdel){beep("tap");shopSave(SHOP().filter(i=>i.id!==t.dataset.shopdel));return}
+  if(t.id==="shop-preset"){beep("open");const have=new Set(SHOP().map(i=>i.t));shopSave([...SHOP(),...SHOP_PRESET.filter(x=>!have.has(x)).map((x,k)=>({id:uid()+uid(),t:x,by:S.who,at:Date.now()+k,done:false}))]);return}
+  if(t.id==="shop-clear"){beep("tap");shopSave(SHOP().filter(i=>!i.done));return}
   if(t.dataset.pd){beep("tap");S.planDay=+t.dataset.pd;S.mapFocus=null;S.mapAll=false;S.mapView=null;S.trial=null;renderPlan();return}
   if(t.id==="edit-day"){openEditor(S.planDay);return}
   const d=DAYS()[S.planDay-1];
@@ -2266,12 +2354,19 @@ function renderDiary(){
       ${both?`<div class="body">${esc(theirs.text)}</div>`:`<div class="sealed"><div>${lock}${theirs?`${NAME[o]}は書き終わったよ。<br>あなたが書くと、ふたりの日記がひらきます`:mine?`${NAME[o]}が書くのを待っています`:`ふたりとも書いたら、ここに${NAME[o]}の日記が出てきます`}</div></div>`}
     </div>
   </div>
+  ${emaHTML()}
   <div class="remind"><h3><span class="moon"></span>毎晩23時のおしらせ</h3>
     <p class="small">旅行中の6日間、毎晩23時にスマホへ「交換日記を書こう」と通知が来るように、カレンダーの予定を追加できます。ふたりともそれぞれのスマホで追加してね。</p>
-    <a class="btn" id="ics" href="okinawa-diary-reminder.ics">カレンダーに追加する</a>
+    <a class="btn" id="ics" href="toshikoshi-diary-reminder.ics">カレンダーに追加する</a>
     <p class="small" style="opacity:.85;margin-bottom:0">iPhoneは「すべて追加」、Androidはダウンロードしたファイルを開くと、カレンダーに6日分の予定（毎晩23時）が入ります。</p></div>
   ${letterHTML()}`;
 }
+function emaHTML(){const me=S.who,o=other(me||"sai");const E=S.ema||{};
+  const board=w=>{const x=E[w];return `<div class="ema ${x?"":"blank"}"><span class="ema-hole"></span><div class="ema-t">${x?esc(x.text):"まだ書いていません"}</div><div class="ema-n">${NAME[w]}</div></div>`};
+  return `<section class="emas"><h3>絵馬 — 二〇二七年の抱負</h3><p class="small muted">今年やりたいこと・願いごとを一枚ずつ。初詣のあとに書くのがおすすめ。相手の絵馬もいつでも見られます。</p>
+   <div class="ema-row">${board("sai")}${board("yui")}</div>
+   ${S.canWrite&&me?`<form class="ema-form" id="ema-form"><input id="ema-in" maxlength="40" placeholder="例：ふたりでまた旅行に行く" value="${esc(E[me]?.text||"")}"><button class="btn mini" type="submit">${E[me]?"書きなおす":"奉納する"}</button></form>`:""}</section>`}
+$("#v-diary").addEventListener("submit",async e=>{if(e.target.id!=="ema-form")return;e.preventDefault();const v=$("#ema-in").value.trim();if(!v)return;try{await S.db.doc("ema/"+S.who).set({text:v.slice(0,40),at:Date.now()});beep("clear");suzu(.1);toast("絵馬を奉納しました")}catch(err){writeErr(err)}});
 $("#v-diary").addEventListener("click",async e=>{
   const t=e.target.closest("button");if(!t)return;
   if(t.dataset.dd){beep("tap");S.diaryDay=+t.dataset.dd;renderDiary();return}
@@ -2297,10 +2392,10 @@ function letterHTML(){
 async function saveICS(){
   const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//omedeto-shimagurashi//JP","CALSCALE:GREGORIAN"];
   const stamp=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
-  for(let n=1;n<=6;n++){const day=String(18+n).padStart(2,"0");
-    L.push("BEGIN:VEVENT",`UID:futari-diary-${n}@shimagurashi`,`DTSTAMP:${stamp}`,`DTSTART:202611${day}T140000Z`,`DTEND:202611${day}T141500Z`,`SUMMARY:ふたりの交換日記を書こう（DAY${n}）`,"DESCRIPTION:今日いちばん楽しかったことを一言。ふたりとも書くと日記がひらくよ。","BEGIN:VALARM","ACTION:DISPLAY","TRIGGER:PT0M","DESCRIPTION:交換日記の時間です","END:VALARM","END:VEVENT")}
+  for(let n=1;n<=6;n++){const ymd=TRIP_DATES[n-1].replace(/-/g,"");
+    L.push("BEGIN:VEVENT",`UID:futari-toshikoshi-diary-${n}@toshikoshi`,`DTSTAMP:${stamp}`,`DTSTART:${ymd}T140000Z`,`DTEND:${ymd}T141500Z`,`SUMMARY:ふたりの交換日記を書こう（DAY${n}）`,"DESCRIPTION:今日いちばん楽しかったことを一言。ふたりとも書くと日記がひらくよ。","BEGIN:VALARM","ACTION:DISPLAY","TRIGGER:PT0M","DESCRIPTION:交換日記の時間です","END:VALARM","END:VEVENT")}
   L.push("END:VCALENDAR");
-  downloadBlob("okinawa-diary-reminder.ics",new Blob([L.join("\r\n")],{type:"text/calendar"}));
+  downloadBlob("toshikoshi-diary-reminder.ics",new Blob([L.join("\r\n")],{type:"text/calendar"}));
 }
 
 /* ---------- アルバム ---------- */
@@ -2443,9 +2538,11 @@ function drawLB(){
   L.innerHTML=`<div class="lightbox" role="dialog" aria-modal="true" aria-label="写真"><div class="lb-top"><span class="small">${i+1} / ${list.length}　${NAME[p.who]||""}${sp?`　${esc(sp.n)}`:fd?`　${esc(fd.n)}`:""}${(p.taken||p.at)?`　<span style="opacity:.7">${fmtTime(p.taken||p.at)}</span>`:""}${bestBy.length?`　<span class="lb-best">★ ${bestBy.map(w=>NAME[w]).join("と")}の今日の一枚</span>`:""}</span><span>${p.who===S.who&&S.canWrite?`<button id="lb-del" class="${arm?"arm":""}">${arm?"本当に消す":"消す"}</button> `:""}<button id="lb-x">とじる</button></span></div>
   <div class="lb-stage" id="lb-stage"><img src="${blob(URLS[p.full]?p.full:p.thumb)}" ${URLS[p.full]?`data-full="${esc(URLS[p.full])}"`:""} alt=""></div>
   <div class="lb-bot"><button id="lb-p" ${i?"":"disabled"}>まえ</button><button class="like ${liked?"on":""}" id="lb-like" ${S.canWrite&&S.who?"":"disabled"} aria-pressed="${!!liked}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="${liked?"#b4476b":"none"}" stroke="currentColor" stroke-width="2"/></svg>${n?`<b>${n}</b>`:""}${n===2?`<span class="small">ふたりのお気に入り</span>`:""}</button><button id="lb-n" ${i<list.length-1?"":"disabled"}>つぎ</button></div>
+  <div class="lb-bestbar"><button id="lb-nenga">🎍 この写真で年賀状をつくる</button></div>
   ${bd&&S.canWrite&&S.who?`<div class="lb-bestbar"><button id="lb-best" class="${isBest?"on":""}" aria-pressed="${!!isBest}">${isBest?"★ 今日の一枚にした（はずす）":"☆ DAY"+bd+"の「今日の一枚」にする"}</button></div>`:""}</div>`;
   const st=$("#lb-stage");let x0=null;lbSwap();
   $("#lb-best")?.addEventListener("click",()=>{setBest(bd,p.id)});
+  $("#lb-nenga")?.addEventListener("click",()=>saveNengajo(p));
   st.addEventListener("click",()=>st.classList.toggle("zoom"));
   st.addEventListener("touchstart",e=>{x0=e.touches.length===1?e.touches[0].clientX:null},{passive:true});
   st.addEventListener("touchend",e=>{if(x0==null||st.classList.contains("zoom"))return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)move(dx<0?1:-1)});
@@ -2524,6 +2621,25 @@ async function saveResultCard(st,rank){
     const blobPng=await new Promise(res=>c.toBlob(res,"image/png"));
     downloadBlob("futari-toshikoshi-result.png",blobPng);
   }catch(err){console.warn(err);if(!(err&&err.code==="declined"))toast("画像を作れませんでした")}
+}
+/* 年賀状メーカー：えらんだ写真で、はがきサイズ（100×148mm）の画像をつくる */
+async function saveNengajo(p){
+  toast("年賀状を作っています…");
+  try{try{await document.fonts.load('80px "Yuji Syuku"');await document.fonts.load('30px "Zen Old Mincho"')}catch{}
+    if(!URLS[p.full])await ensureUrls([p.full]);const bl=await (await fetch(URLS[p.full]||blob(p.thumb))).blob();const img=await createImageBitmap(bl);
+    const W=1181,H=1748,c=document.createElement("canvas");c.width=W;c.height=H;const g=c.getContext("2d");
+    g.fillStyle="#f7f1e6";g.fillRect(0,0,W,H);
+    g.strokeStyle="rgba(181,52,42,.10)";g.lineWidth=2;for(let y=0;y<H+60;y+=44)for(let x=(y/44%2?-44:0);x<W+88;x+=88){for(const r of [40,28,16]){g.beginPath();g.arc(x,y,r,Math.PI,0);g.stroke()}}   // 青海波
+    g.strokeStyle="#b5342a";g.lineWidth=10;g.strokeRect(36,36,W-72,H-72);g.lineWidth=2;g.strokeStyle="#c9a24a";g.strokeRect(54,54,W-108,H-108);
+    const px=110,py=330,pw=W-420,ph=Math.round(pw*1.18);const s=Math.max(pw/img.width,ph/img.height),sw=pw/s,sh=ph/s;
+    g.save();rr(g,px,py,pw,ph,10);g.clip();g.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,px,py,pw,ph);g.restore();g.lineWidth=6;g.strokeStyle="#2b2420";rr(g,px,py,pw,ph,10);g.stroke();
+    g.fillStyle="#b5342a";g.font='400 150px "Yuji Syuku",serif';g.textAlign="center";[..."謹賀新年"].forEach((ch,i)=>g.fillText(ch,W-170,400+i*190));   // 縦書き
+    g.fillStyle="#2b2420";g.font='700 44px "Zen Old Mincho",serif';g.textAlign="left";g.fillText("あけましておめでとうございます",px,py+ph+110);g.fillText("今年もふたりをよろしくお願いします",px,py+ph+180);
+    g.font='400 56px "Yuji Syuku",serif';g.fillText("令和九年　元旦",px,py+ph+290);g.font='700 46px "Zen Old Mincho",serif';g.fillText("さいけう・ゆい",px,py+ph+370);
+    g.fillStyle="#b5342a";rr(g,W-250,H-330,150,150,12);g.fill();g.fillStyle="#f7f1e6";g.font='400 110px "Yuji Syuku",serif';g.textAlign="center";g.fillText("未",W-175,H-218);
+    g.fillStyle="#2b2420";g.font='400 120px "Yuji Syuku",serif';g.textAlign="left";g.fillText("2027",px,230);g.font='700 34px "Zen Old Mincho",serif';g.fillStyle="#6b5f57";g.fillText("HAPPY NEW YEAR",px+310,222);
+    const out=await new Promise(res=>c.toBlob(res,"image/png"));await downloadBlob("nengajo-2027.png",out);beep("clear");
+  }catch(err){console.warn(err);if(!(err&&err.code==="declined"))toast("年賀状を作れませんでした（写真の読み込みを確認してね）")}
 }
 async function downloadBlob(name,b){
   try{const file=new File([b],name,{type:b.type||"application/octet-stream"});
@@ -2830,6 +2946,10 @@ async function start(session){
   sub("diary",s=>{S.diary={};s.docs.forEach(d=>S.diary[d.id]=d.data());safeRender()});
   db.doc("config/secret").onSnapshot(d=>{S.secret=d.exists?d.data().msg:null;if(S.view==="stamp")safeRender()});
   db.doc("prep/items").onSnapshot(d=>{S.items=d.exists?d.data():null;if(S.view==="plan")safeRender()});
+  // 入力欄にカーソルがあっても、買い出しリストと絵馬はすぐ描き直す（入力中の文字とカーソルは保つ）
+  const renderKeep=id=>{const a=document.activeElement;if(a&&(a.id===id||a.dataset?.shop)){const was=a.id===id;render();if(was){const el=document.getElementById(id);if(el)el.focus()}}else safeRender()};
+  db.doc("prep/shop").onSnapshot(d=>{S.shop=d.exists?d.data():null;if(S.view==="plan")renderKeep("shop-in")});
+  sub("ema",s=>{S.ema={};s.docs.forEach(d=>S.ema[d.id]=d.data());if(S.view==="diary")renderKeep("ema-in")});
   sub("letters",s=>{S.letters={};s.docs.forEach(d=>S.letters[d.id]=d.data());if(S.view==="diary"||S.view==="plan")safeRender()});
   sub("best",s=>{S.best={};s.docs.forEach(d=>S.best[d.id]=d.data());if(S.view==="album"||S.view==="plan"||S.view==="result")safeRender();if(S.lb)drawLB()});
   // 相手の動きに反応（上の購読のあとに登録するので、S.* は更新済み）
