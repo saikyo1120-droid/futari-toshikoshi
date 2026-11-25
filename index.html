@@ -922,7 +922,15 @@ h3{font-weight:900}
 .kj-form{display:flex;gap:6px;align-items:stretch}.kj-form input{border:1px solid var(--hair);border-radius:12px;background:#f6f3ee;padding:10px 12px;font:inherit;font-size:16px;min-width:0;flex:1}
 .kj-form .kj-ch{flex:0 0 56px;text-align:center;font-family:var(--brush);font-size:26px;padding:4px}
 .box.kz{max-width:520px}.kz-paper{background:#1d2a44;border-radius:14px;padding:12px;display:grid;place-items:center}
-#kz-cv{width:100%;max-height:58vh;aspect-ratio:900/1260;height:auto;background:#fbf8f0;touch-action:none;border-radius:2px;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:crosshair}
+.kz-sheet{position:relative;width:min(100%,calc(56vh*900/1260));aspect-ratio:900/1260}
+#kz-guide{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;mix-blend-mode:multiply}
+.kz-model{display:flex;gap:6px;margin-top:10px}.kz-model input{flex:1;min-width:0;border:1px solid var(--hair);border-radius:12px;background:#f6f3ee;padding:9px 12px;font:inherit;font-size:16px}
+.kz-model .btn.on,#kz-red.on{background:var(--shu);color:#fff}
+.kj-form{flex-wrap:wrap}.kj-form .kj-ch{flex:1 1 auto;max-width:72px}.kj-form .btn{margin-left:auto}
+.kj-form textarea{flex:1 1 100%;border:1px solid var(--hair);border-radius:12px;background:#f6f3ee;padding:10px 12px;font:inherit;font-size:16px;line-height:1.7;min-height:108px;resize:vertical}
+.kj-cnt{flex:1 1 100%;text-align:right;min-height:1em}
+.kj-why.has{white-space:pre-wrap;overflow-wrap:anywhere;text-align:left;background:rgba(43,36,32,.05);border-radius:10px;padding:8px 10px;margin:0 0 8px;font-size:14px;line-height:1.8}.kj-why.has b{display:block;font-family:var(--min);font-size:12px;color:var(--muted);margin-bottom:2px}
+#kz-cv{display:block;width:100%;height:100%;background:#fbf8f0;touch-action:none;border-radius:2px;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:crosshair}
 .kz-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:10px 0}.kz-seg{display:flex;background:rgba(43,36,32,.07);border-radius:10px;padding:3px}
 .kz-seg button{border:0;background:none;border-radius:8px;padding:6px 14px;font-family:var(--brush);font-size:16px;min-height:36px}.kz-seg button.on{background:#fff;box-shadow:var(--soft)}
 #kz-red.on{background:var(--shu);color:#fff}.kz-foot{display:flex;gap:8px;flex-wrap:wrap}.kz-foot .btn{flex:1}
@@ -1555,7 +1563,7 @@ document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>{
 function safeRender(){const a=document.activeElement;if(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main")){S.pendingRender=true;return}render()}
 document.querySelector("main").addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(S.pendingRender&&!(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main"))){S.pendingRender=false;render()}},50)});
 S.drafts={};
-document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;if(el.id==="capsule-in")S.drafts.capsule=el.value;if(el.id==="diary-in"){const c=document.getElementById("diary-cnt");if(c)c.textContent=el.value.length?el.value.length+"文字":""}
+document.querySelector("main").addEventListener("input",e=>{const el=e.target;if(!el||!el.id)return;if(el.id==="capsule-in")S.drafts.capsule=el.value;if(el.id==="kanji-in")S.drafts.kanjiCh=el.value;if(el.id==="kanji-why"){S.drafts.kanjiWhy=el.value;el.style.height="auto";el.style.height=Math.min(el.scrollHeight+2,420)+"px";const c=document.getElementById("kanji-cnt");if(c)c.textContent=el.value.length?el.value.length+" / 600文字":""}if(el.id==="diary-in"){const c=document.getElementById("diary-cnt");if(c)c.textContent=el.value.length?el.value.length+"文字":""}
   if(el.id==="diary-in")S.drafts["diary:"+S.diaryDay]=el.value;else if(el.id==="letter-in")S.drafts.letter=el.value;else if(el.id==="secret-in")S.drafts.secret=el.value});
 function render(){S.pendingRender=false;const keep={};
   document.querySelectorAll("main textarea[id],main input[id]:not([type=checkbox]):not([type=file])").forEach(el=>{if(el.value!==el.defaultValue)keep[el.id]=el.value});
@@ -2493,16 +2501,18 @@ function renderDiary(){
 }
 /* ---------- 今年の漢字（ふたりとも決めたら同時に発表） ---------- */
 function kanjiHTML(){const me=S.who,o=other(me||"sai"),K=S.kanji||{};const both=K.sai&&K.yui;
-  const board=w=>{const x=K[w];const show=both||(w===me&&x);return `<div class="kj ${show?"":"hide"}"><div class="kj-board"><span>${show?esc(x.ch):"？"}</span></div><div class="kj-n">${NAME[w]}の一文字</div>${show&&x.why?`<div class="kj-why">${esc(x.why)}</div>`:`<div class="kj-why muted">${x?(both?"":"決めたよ。相手を待っています"):"まだ決めていません"}</div>`}</div>`};
+  const board=w=>{const x=K[w];const show=both||(w===me&&x);return `<div class="kj ${show?"":"hide"}"><div class="kj-board"><span>${show?esc(x.ch):"？"}</span></div><div class="kj-n">${NAME[w]}の一文字</div><div class="kj-why muted">${x?(both?"":w===me?"決めたよ。相手を待っています":"もう決めたみたい"):"まだ決めていません"}</div></div>`};
+  const why=w=>{const x=K[w];return (both||w===me)&&x&&x.why?`<div class="kj-why has"><b>${NAME[w]}の理由</b>${esc(x.why)}</div>`:""};
   return `<section class="emas kanji"><h3>今年の漢字 — 二〇二六年</h3><p class="small muted">ふたりの2026年を、それぞれ漢字一文字で。ふたりとも決めると、清水の舞台のように同時に発表されます。大晦日の夜にどうぞ。</p>
-   <div class="kj-row">${board("sai")}${board("yui")}</div>
-   ${S.canWrite&&me?`<form class="kj-form" id="kanji-form"><input id="kanji-in" class="kj-ch" maxlength="1" placeholder="字" value="${esc(K[me]?.ch||"")}" aria-label="漢字一文字"><input id="kanji-why" maxlength="40" placeholder="えらんだ理由（例：旅をたくさんしたから）" value="${esc(K[me]?.why||"")}"><button class="btn mini" type="submit">${K[me]?"書きなおす":"決める"}</button></form>`:""}</section>`}
+   <div class="kj-row">${board("sai")}${board("yui")}</div>${why("sai")}${why("yui")}
+   ${S.canWrite&&me?`<form class="kj-form" id="kanji-form"><input id="kanji-in" class="kj-ch" maxlength="1" placeholder="字" value="${esc(S.drafts.kanjiCh??K[me]?.ch??"")}" aria-label="漢字一文字"><button class="btn mini" type="submit">${K[me]?"書きなおす":"決める"}</button><textarea id="kanji-why" maxlength="600" rows="4" placeholder="えらんだ理由。長く書いても大丈夫（例：旅をたくさんしたから。春は…）">${esc(S.drafts.kanjiWhy??K[me]?.why??"")}</textarea><span class="kj-cnt small muted" id="kanji-cnt"></span></form>`:""}</section>`}
 /* ---------- 書き初め（指で書ける筆） ---------- */
-function kakizomeCardHTML(){return `<section class="emas kz-card"><h3>書き初め</h3><p class="small muted">指で書ける筆です。ゆっくり書くと太く、速く書くとかすれます。新年の抱負や今年の一文字を半紙に。できた作品は画像で保存して、アルバムにも入れられます。</p><button class="btn" id="kz-open">筆をとる</button></section>`}
+function kakizomeCardHTML(){return `<section class="emas kz-card"><h3>書き初め</h3><p class="small muted">指で書ける筆です。線はなめらかに整えられ、ゆっくり書くと太く、速く払うと細くかすれます。お手本の文字をうすく出して、なぞり書きもできます。新年の抱負や今年の一文字を半紙に。できた作品は画像で保存して、アルバムにも入れられます。</p><button class="btn" id="kz-open">筆をとる</button></section>`}
 const KZ={strokes:[],size:1,red:false};
 function openKakizome(){
   $("#layer2").innerHTML=`<div class="modal top"><div class="box kz"><div class="ed-head"><h2>書き初め</h2><button class="x" id="kz-close" aria-label="とじる">×</button></div>
-   <div class="kz-paper"><canvas id="kz-cv" width="900" height="1260" aria-label="半紙"></canvas></div>
+   <div class="kz-paper"><div class="kz-sheet"><canvas id="kz-cv" width="900" height="1260" aria-label="半紙"></canvas><canvas id="kz-guide" width="900" height="1260" aria-hidden="true"></canvas></div></div>
+   <div class="kz-model"><input id="kz-text" maxlength="8" placeholder="お手本の文字（例：初日の出）" autocomplete="off" enterkeyhint="done" aria-label="お手本の文字"><button class="btn mini ghost" id="kz-grid" aria-pressed="false">補助線</button></div>
    <div class="kz-tools"><div class="kz-seg" role="group" aria-label="筆の太さ"><button data-kzs="0.6">細</button><button data-kzs="1" class="on">中</button><button data-kzs="1.6">太</button></div>
      <button class="btn mini ghost" id="kz-red">朱</button><button class="btn mini ghost" id="kz-undo">一画もどす</button><button class="btn mini ghost" id="kz-clear">白紙にする</button></div>
    <div class="kz-foot"><button class="btn sea" id="kz-save">画像で保存</button>${S.canWrite&&S.assets?`<button class="btn pink" id="kz-album">アルバムに入れる</button>`:""}</div>
@@ -2512,17 +2522,47 @@ function openKakizome(){
   paper();let base=g.getImageData(0,0,cv.width,cv.height);
   const snap=()=>{KZ.strokes.push(g.getImageData(0,0,cv.width,cv.height));if(KZ.strokes.length>12)KZ.strokes.shift()};
   const pos=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*cv.width,(e.clientY-r.top)/r.height*cv.height]};
-  let last=null,w=0,bristle=[];
-  const dab=(x,y,rad,dry,ang)=>{const col=KZ.red?"181,52,42":"22,20,24";
-    g.fillStyle=`rgba(${col},${.9-dry*.25})`;if(dry<.7){g.fillStyle=`rgba(${col},${(.92*(1-dry*1.2)).toFixed(2)})`;g.beginPath();g.arc(x,y,rad*(1-dry*.25),0,7);g.fill()}
-    const nx=Math.cos(ang+Math.PI/2),ny=Math.sin(ang+Math.PI/2);            // かすれ：毛の一本ずつ
-    for(let i=0;i<bristle.length;i++){const b=bristle[i];if(Math.random()<dry*b.d)continue;const o=(i/(bristle.length-1)*2-1)*rad;g.fillStyle=`rgba(${col},${.55+Math.random()*.4})`;g.beginPath();g.arc(x+nx*o+(Math.random()-.5)*1.5,y+ny*o+(Math.random()-.5)*1.5,Math.max(.8,rad*.12*b.w),0,7);g.fill()}};
-  const down=e=>{e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch{}snap();const [x,y]=pos(e);bristle=Array.from({length:22},()=>({d:.5+Math.random()*1.3,w:.6+Math.random()*1.1}));w=34*KZ.size;last={x,y,t:performance.now()};dab(x,y,w*1.05,0,0);g.fillStyle=KZ.red?"rgba(181,52,42,.25)":"rgba(22,20,24,.2)";g.beginPath();g.arc(x,y,w*1.3,0,7);g.fill()};
-  const move=e=>{if(!last)return;e.preventDefault();const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];for(const ev of evs){const [x,y]=pos(ev),now=performance.now();const dx=x-last.x,dy=y-last.y,dist=Math.hypot(dx,dy);if(dist<1)continue;const sp=dist/Math.max(1,now-last.t);
-      const target=Math.max(13,46-sp*11)*KZ.size*(ev.pressure&&ev.pointerType==="pen"?(.5+ev.pressure):1);const dry=Math.max(0,Math.min(1,(sp-1.9)/3));const ang=Math.atan2(dy,dx);const n=Math.ceil(dist/2);
-      for(let i=1;i<=n;i++){w+=(target-w)*.06;dab(last.x+dx*i/n,last.y+dy*i/n,w,dry,ang)}last={x,y,t:now}}};
-  const up=()=>{if(!last)return;last=null};
+  /* 筆：手ぶれを整えた曲線に、斜めの穂先（楕円）を細かく置いていく。入り・とめ・はらい付き */
+  const NIB=-.62;let st=null,bristle=[];
+  const ink=()=>KZ.red?"181,52,42":"20,18,22";
+  const stamp=(x,y,w,dry,ang)=>{const col=ink();
+    if(dry<.95){g.fillStyle=`rgb(${col})`;g.beginPath();g.ellipse(x,y,w*(1-dry*.55),w*.6*(1-dry*.55),NIB,0,7);g.fill()}
+    if(dry>.02){const nx=Math.cos(ang+Math.PI/2),ny=Math.sin(ang+Math.PI/2),N=bristle.length,r=Math.max(.9,w*1.9/N);g.fillStyle=`rgba(${col},.92)`;   // かすれ：同じ毛がつづけて抜けるので、すじになる
+      for(let i=0;i<N;i++){if(dry>bristle[i])continue;const o=(i/(N-1)*2-1)*w*.92;g.beginPath();g.arc(x+nx*o,y+ny*o,r,0,7);g.fill()}}};
+  const seg=(p0,c,p1)=>{const len=Math.hypot(c.x-p0.x,c.y-p0.y)+Math.hypot(p1.x-c.x,p1.y-c.y);const n=Math.max(1,Math.ceil(len/1.6));
+    for(let i=1;i<=n;i++){const u=i/n,a=(1-u)*(1-u),b2=2*(1-u)*u,c2=u*u;const x=a*p0.x+b2*c.x+c2*p1.x,y=a*p0.y+b2*c.y+c2*p1.y;
+      st.w+=(st.tw-st.w)*.045;st.dry+=(st.tdry-st.dry)*.05;stamp(x,y,st.w,st.dry,st.ang)}};
+  const down=e=>{if(st)return;e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch{}snap();const [x,y]=pos(e);const base=30*KZ.size;
+    bristle=Array.from({length:20},()=>.15+Math.random()*.85);
+    st={id:e.pointerId,base,raw:{x,y},s:{x,y},mid:{x,y},t:performance.now(),v:0,w:base*.5,tw:base*1.02,dry:0,tdry:0,ang:.8,len:0,pen:e.pointerType==="pen"};
+    stamp(x,y,st.w,0,st.ang)};
+  const move=e=>{if(!st||e.pointerId!==st.id)return;e.preventDefault();const evs=e.getCoalescedEvents?e.getCoalescedEvents():[e];
+    for(const ev of (evs.length?evs:[e])){const [x,y]=pos(ev),now=performance.now();const d=Math.hypot(x-st.raw.x,y-st.raw.y);if(d<.6)continue;
+      const sp=d/Math.max(4,now-st.t);st.v+=(sp-st.v)*.25;st.raw={x,y};st.t=now;
+      const k=.42;const ns={x:st.s.x+(x-st.s.x)*k,y:st.s.y+(y-st.s.y)*k};const nm={x:(st.s.x+ns.x)/2,y:(st.s.y+ns.y)/2};
+      const dx=nm.x-st.mid.x,dy=nm.y-st.mid.y,dl=Math.hypot(dx,dy);if(dl>.3)st.ang=Math.atan2(dy,dx);st.len+=dl;
+      const pr=st.pen&&ev.pressure?(.45+ev.pressure*1.1):1;
+      st.tw=st.base*Math.max(.36,Math.min(1.12,1.25-st.v*.28))*pr;st.tdry=Math.max(0,Math.min(.9,(st.v-3.3)/3.2));
+      seg(st.mid,st.s,nm);st.s=ns;st.mid=nm}};
+  const up=e=>{if(!st||(e&&e.pointerId!==undefined&&e.pointerId!==st.id))return;const s=st;if(performance.now()-s.t>90)s.v=0;   // 止めてから離したら「とめ」
+    seg(s.mid,s.s,s.raw);                                    // 指のところまで線を届かせる
+    if(s.len<6){stamp(s.raw.x,s.raw.y,s.base*.8,0,s.ang)}     // 点
+    else if(s.v>1.25){const L=Math.min(s.w*3.2,26+s.v*30),n=Math.ceil(L/1.5),cx=Math.cos(s.ang),cy=Math.sin(s.ang),w0=s.w;   // はらい：進む向きへ細く抜く
+      for(let i=1;i<=n;i++){const u=i/n;stamp(s.raw.x+cx*L*u,s.raw.y+cy*L*u,w0*Math.pow(1-u,1.35),Math.min(.9,s.dry+u*.35),s.ang)}}
+    else{const w0=s.w;for(let i=1;i<=6;i++)stamp(s.raw.x+Math.cos(NIB)*i*.6,s.raw.y+Math.sin(NIB)*i*.6+i*.5,w0*(1+.012*i),0,s.ang)}   // とめ：筆をおさえる
+    st=null};
   cv.addEventListener("pointerdown",down);cv.addEventListener("pointermove",move);cv.addEventListener("pointerup",up);cv.addEventListener("pointercancel",up);
+  /* お手本（なぞり書き用。保存する画像には入らない） */
+  const gv=$("#kz-guide"),gg=gv.getContext("2d");let grid=false;
+  const guide=async()=>{const chars=[...($("#kz-text").value||"").replace(/\s/g,"")].slice(0,8);gg.clearRect(0,0,900,1260);
+    const cols=chars.length>4?2:1,rows=Math.max(1,Math.ceil(chars.length/cols));const mx=70,my=80,cw=(900-mx*2)/cols,ch=(1260-my*2)/rows,sz=Math.min(cw,ch)*.9;
+    if(grid){gg.strokeStyle="rgba(181,52,42,.35)";gg.lineWidth=2;gg.setLineDash([10,10]);const R=chars.length?rows:2,C=chars.length?cols:1,gw=(900-mx*2)/C,gh=(1260-my*2)/R;
+      for(let c=0;c<C;c++)for(let r=0;r<R;r++){const x=mx+c*gw,y=my+r*gh;gg.strokeRect(x,y,gw,gh);gg.beginPath();gg.moveTo(x+gw/2,y);gg.lineTo(x+gw/2,y+gh);gg.moveTo(x,y+gh/2);gg.lineTo(x+gw,y+gh/2);gg.stroke()}gg.setLineDash([])}
+    if(!chars.length)return;try{await document.fonts.load(`400 ${Math.round(sz)}px "Yuji Syuku"`,chars.join(""))}catch{}
+    gg.fillStyle="rgba(60,70,110,.2)";gg.font=`400 ${Math.round(sz)}px "Yuji Syuku","Zen Old Mincho","Hiragino Mincho ProN",serif`;gg.textAlign="center";gg.textBaseline="middle";
+    chars.forEach((c,i)=>{const col=Math.floor(i/rows),row=i%rows;gg.fillText(c,900-mx-cw*(col+.5),my+ch*(row+.5)+sz*.03)})};
+  $("#kz-text").addEventListener("input",guide);$("#kz-text").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.target.blur()}});
+  $("#kz-grid").onclick=()=>{grid=!grid;$("#kz-grid").classList.toggle("on",grid);$("#kz-grid").setAttribute("aria-pressed",grid);beep("tap");guide()};
   const close=()=>{$("#layer2").innerHTML=""};$("#kz-close").onclick=close;
   $("#layer2").querySelectorAll("[data-kzs]").forEach(b=>b.onclick=()=>{KZ.size=+b.dataset.kzs;$("#layer2").querySelectorAll("[data-kzs]").forEach(x=>x.classList.toggle("on",x===b));beep("tap")});
   $("#kz-red").onclick=()=>{KZ.red=!KZ.red;$("#kz-red").classList.toggle("on",KZ.red);beep("tap")};
@@ -2547,7 +2587,7 @@ function emaHTML(){const me=S.who,o=other(me||"sai");const E=S.ema||{};
    <div class="ema-row">${board("sai")}${board("yui")}</div>
    ${S.canWrite&&me?`<form class="ema-form" id="ema-form"><input id="ema-in" maxlength="40" placeholder="例：ふたりでまた旅行に行く" value="${esc(E[me]?.text||"")}"><button class="btn mini" type="submit">${E[me]?"書きなおす":"奉納する"}</button></form>`:""}</section>`}
 $("#v-diary").addEventListener("submit",async e=>{
-  if(e.target.id==="kanji-form"){e.preventDefault();const ch=[...$("#kanji-in").value.trim()][0];if(!ch){toast("一文字いれてね");return}const had=!!(S.kanji||{})[other(S.who)];try{await S.db.doc("kanji/"+S.who).set({ch,why:$("#kanji-why").value.trim().slice(0,40),at:Date.now()});beep("clear");if(had){confetti();bonsho(1);toast("今年の漢字、発表！")}else toast("決めました。相手が決めると発表されます")}catch(err){writeErr(err)}return}
+  if(e.target.id==="kanji-form"){e.preventDefault();const ch=[...$("#kanji-in").value.trim()][0];if(!ch){toast("一文字いれてね");return}const had=!!(S.kanji||{})[other(S.who)];try{await S.db.doc("kanji/"+S.who).set({ch,why:$("#kanji-why").value.trim().slice(0,600),at:Date.now()});delete S.drafts.kanjiWhy;delete S.drafts.kanjiCh;beep("clear");if(had){confetti();bonsho(1);toast("今年の漢字、発表！")}else toast("決めました。相手が決めると発表されます")}catch(err){writeErr(err)}return}
   if(e.target.id==="capsule-form"){e.preventDefault();const v=$("#capsule-in").value.trim();if(!v){toast("ひとことだけでも書いてね");return}try{await S.db.doc("capsule/"+S.who).set({text:v,at:Date.now()});delete S.drafts.capsule;$("#capsule-in").value="";beep("clear");suzu(.1);toast("カプセルに入れました。2027年の大晦日にひらきます")}catch(err){writeErr(err)}return}
   if(e.target.id!=="ema-form")return;e.preventDefault();const v=$("#ema-in").value.trim();if(!v)return;try{await S.db.doc("ema/"+S.who).set({text:v.slice(0,40),at:Date.now()});beep("clear");suzu(.1);toast("絵馬を奉納しました")}catch(err){writeErr(err)}});
 $("#v-diary").addEventListener("click",async e=>{
