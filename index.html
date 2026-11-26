@@ -969,6 +969,14 @@ main.enter>section.view:not([hidden])>*:not(.chbar):not(.ch-off){animation:chin 
   .food.open{grid-column:1/-1;grid-template-columns:118px 1fr;grid-template-rows:auto;box-shadow:0 10px 28px rgba(43,36,32,.16);border-color:var(--kin)}
   .food.open .food-n{font-size:15px;-webkit-line-clamp:unset;min-height:0}.food.open .food-d,.food.open .food-w{display:block}.food.open .food-in{padding:12px}
 }
+
+/* ============ ひらいた画面（モーダル）をとじやすく ============ */
+.modal .box.guide,.modal .box.kz{max-height:calc(100dvh - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));overflow:auto;overscroll-behavior:contain;text-align:left}
+.modal .box:has(>.ed-head){padding-top:0}
+.modal .box>.ed-head{position:sticky;top:0;z-index:5;background:inherit;margin:0 -20px 12px;padding:14px 20px 12px;border-radius:22px 22px 0 0;box-shadow:0 1px 0 var(--hair)}
+.ed-head .x{width:44px;height:44px;font-size:22px;flex:0 0 auto;display:grid;place-items:center;background:var(--sumi);color:#f3dfa0;border-color:transparent}
+.gd-done{display:block;width:100%;margin-top:16px;text-align:center}
+.modal{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);background:rgba(20,18,26,.55)}
 </style>
 </head>
 <body>
@@ -1601,6 +1609,10 @@ function showChapterOf(sel){const el=document.querySelector(sel);const c=el?.clo
 function refitPlanMap(){setTimeout(()=>{if(LM.plan){LM.plan.invalidateSize();LM.plan._fitted=false;drawPlanMap()}},90)}
 document.addEventListener("click",e=>{const b=e.target.closest(".chbar [data-ch]");if(!b||b.classList.contains("on"))return;beep("tap");S.ch[S.view]=b.dataset.ch;render();boardTop();
   const m=$("main");m.classList.remove("enter");void m.offsetWidth;m.classList.add("enter");if(S.view==="plan"&&b.dataset.ch==="shiori")refitPlanMap()});
+/* ひらいた画面をとじやすく：外側をタップ／Esc でとじる（書きかけがある画面は対象外） */
+const modalClose=m=>{if(!m||m.querySelector("textarea,canvas,input:not([type=checkbox]):not([type=radio])"))return false;const x=m.querySelector(".ed-head .x,.x");if(!x)return false;x.click();return true};
+document.addEventListener("click",e=>{if(e.target.classList&&e.target.classList.contains("modal"))modalClose(e.target)});
+document.addEventListener("keydown",e=>{if(e.key!=="Escape")return;const ms=document.querySelectorAll(".modal");const m=ms[ms.length-1];if(m){const x=m.querySelector(".ed-head .x");if(x)x.click()}});
 // 入力中は再描画を待つ（相手の保存で自分の下書きが消えないように）
 function safeRender(){const a=document.activeElement;if(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main")){S.pendingRender=true;return}render()}
 document.querySelector("main").addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(S.pendingRender&&!(a&&(a.tagName==="TEXTAREA"||a.tagName==="INPUT")&&a.closest("main"))){S.pendingRender=false;render()}},50)});
@@ -2217,7 +2229,9 @@ function openGuide(){
    </ol>
    <div class="gnote"><b>をけら詣り</b>：大晦日の夜〜元日の早朝、境内の「をけら灯籠」の火を火縄に移し、消えないようにくるくる回しながら持ち帰る京都の風物詩。火縄は境内で授かれます（電車には火のついたまま持ち込めないので、消してお守りとして持ち帰ります）。</div>
    <div class="gnote"><b>夜の備え</b>：1月1日3時の京都は0℃前後。カイロ・手袋・マフラーに、あたたかい飲み物を。大晦日〜元日は関西の電車の多くが終夜運転をしますが、本数は少なめ。時刻は各社の発表を前日に確認してね。</div>
+   <button class="btn gd-done" id="gd-done">とじる</button>
   </div></div>`;
+  $("#gd-done").onclick=()=>$("#gd-close").click();
   $("#gd-close").onclick=()=>{$("#layer2").innerHTML=""};
 }
 const SHOP=()=>S.shop?.items||[];
